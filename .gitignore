@@ -1,5 +1,8 @@
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
 gnome-sdk-helper
-rpm-dependencies.P
+Makefile
 packages/SOURCES/*.zip
 packages/SOURCES/*.tgz
 packages/SOURCES/*.tar.gz
