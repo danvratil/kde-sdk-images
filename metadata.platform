@@ -1,0 +1,13 @@
+[Runtime]
+runtime=org.kde.Platform/x86_64/5.9
+sdk=org.kde.Sdk/x86_64/5.9
+
+[Extension org.kde.Platform.GL]
+directory=lib/GL
+
+[Extension org.kde.Platform.Timezones]
+directory=share/zoneinfo
+
+[Extension org.kde.Platform.Locale]
+directory=share/runtime/locale
+subdirectories=true

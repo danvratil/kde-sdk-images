@@ -1,0 +1,18 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">kde-sdk-images</name>
+  <shortdesc xml:lang="en">KDE and Freedesktop sdk images</shortdesc>
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/SandboxedApps" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Daniel Vrátil</foaf:name>
+      <foaf:mbox rdf:resource="mailto:dvratil@redhat.com" />
+      <gnome:userid>dvratil</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
