@@ -189,32 +189,36 @@ macro(generatePackageTargets platform packages)
     endforeach()
 
 
+    # Generate targets for each package:
+    # ${package} (meta target)
+    #  '-- ${package}-build (build)
+    #       '-- ${package}-sources (get sources)
     foreach(package ${packages})
-        message(STATUS "Preparing package ${package}")
+        add_custom_target(${package})
+
         # Use relative path to SPEC file, because absolute paths differ here and in the build.sh chroot
         set(specFile "packages/SPECS/${platform}-platform/${package}.spec")
 
-        if (${package}_sources)
-            foreach(source ${${package}_sources})
-                get_filename_component(fileName ${source} NAME)
-                set(destFile "${CMAKE_SOURCE_DIR}/packages/SOURCES/${fileName}")
-                if (NOT EXISTS "${destFile}")
-                    message(STATUS "\t* Downloading ${source}  ...")
-                    # TODO: Check hashes
-                    FILE(DOWNLOAD "${source}" "${destFile}"
-                         STATUS status
-                    )
-                    LIST(GET ${status} 0 statusCode)
-                    LIST(GET ${status} 1 statusMsg)
-                    if (${statusCode} GREATER 0)
-                        message(FATAL_ERROR "Failed to download source file for ${package}: ${statusMsg}")
-                    endif()
-                else()
-                    message(STATUS "\t* Source file ${fileName} already exists, not re-downloading")
-                endif()
-            endforeach()
-        else()
-            message(STATUS "\t* No remote sources to download")
+        # List of local source tarballs
+        set(sourceFiles "")
+        foreach(source ${${package}_sources})
+            get_filename_component(fileName ${source} NAME)
+            set(destFile "${CMAKE_SOURCE_DIR}/packages/SOURCES/${fileName}")
+            LIST(APPEND sourceFiles ${destFile})
+
+            add_custom_command(
+                OUTPUT ${destFile}
+                COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Downloading source for ${package}\"
+                COMMAND wget ${source} -O ${destFile}
+                DEPENDS ${specFile}
+            )
+        endforeach()
+        if ("${sourceFiles}")
+            # Only create the ${package}-source target if there are any sources
+            add_custom_target(${package}-sources
+                DEPENDS ${destFiles}
+            )
+            add_dependencies(${package} ${package}-sources)
         endif()
 
         set(buildRequiresPackages "")
@@ -236,20 +240,22 @@ macro(generatePackageTargets platform packages)
         add_custom_command(
             OUTPUT ${targets}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Building ${package}\"
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Preparing build root ...\"
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Preparing build root ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE} &> /dev/null
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Installing dependencies ...\"
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Installing dependencies ...\"
             COMMAND ${installBuildRequires}
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Building ...\"
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Building ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile}
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Cleaning up build root ...\"
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/clear_root.sh
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Done\"
-            DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${buildRequiresPackages}
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
+            DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${buildRequiresPackages}
         )
-        add_custom_target(${package}
+        add_custom_target(${package}-build
                           DEPENDS ${targets}
         )
+        add_dependencies(${package} ${package}-build)
+
     endforeach()
 endmacro()
 
@@ -274,8 +280,11 @@ endmacro()
 
 ######### Build targets ##########
 
+# Clone git.gnome.org/freedesktop-sdk-base with the yocto base
+# it will generate the ${SDK_BASE_IMAGE} and ${PLATFORM_BASE_IMAGE} files
 createBaseImages()
 
+# Generates targets for all listed packages in freedesktop-platform
 generatePackageTargets("freedesktop" "${freedesktop_PACKAGES}")
 
 
