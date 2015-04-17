@@ -212,43 +212,44 @@ macro(generatePackageTargets platform packages)
             message(STATUS "\t* No remote sources to download")
         endif()
 
-        if (${package}_buildRequires)
-            set(buildRequiresPackages "")
-            foreach(br ${${package}_buildRequires})
-                foreach (pkg ${${br}_provides})
-                    set(buildRequiresPackages "${buildRequiresPackages} $pkg")
-                endforeach()
-            endforeach()
-            set(installBuildRequires "${CMAKE_SOURCE_DIR}/build.sh smart install -y ${buildRequiresPackages}")
+        set(buildRequiresPackages "")
+        foreach(br ${${package}_buildRequires})
+            LIST(APPEND buildRequiresPackages ${${br}_target})
+        endforeach()
+        if (buildRequiresPackages)
+            set(installBuildRequires ${CMAKE_SOURCE_DIR}/build.sh smart install -y ${buildRequiresPackages})
         else()
-            set(installBuildRequires "${CMAKE_COMMAND} -E echo")
-            set(buildRequiresPackages "")
+            set(installBuildRequires true)
+            set(depTargets "")
         endif()
 
-        message(STATUS "\t* Adding custom target ${${package}_provides}")
+        set(targets "")
+        foreach(tgt ${${package}_targets})
+            LIST(APPEND targets ${${tgt}_target})
+        endforeach()
 
         add_custom_command(
-            OUTPUT ${${package}_provides}
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building ${package}"
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green "\t* Preparing build root ..."
-            COMMAND ${CMAKE_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE}
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green "\t* Installing dependencies ..."
+            OUTPUT ${targets}
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Building ${package}\"
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Preparing build root ...\"
+            COMMAND ${CMAKE_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE} &> /dev/null
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Installing dependencies ...\"
             COMMAND ${installBuildRequires}
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green "\t* Building ..."
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Building ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile}
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green "\t* Cleaning up build root ..."
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Cleaning up build root ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/clear_root.sh
-            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green "\t* Done"
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"\t* Done\"
             DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${buildRequiresPackages}
         )
         add_custom_target(${package}
-            DEPENDS ${${package}_provides}
+                          DEPENDS ${targets}
         )
     endforeach()
 endmacro()
 
 macro(createBaseImages)
-    add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/freedesktop-sdk-base
+    add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/Makefile
                        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Cloning freedesktop-sdk-base"
                        COMMAND git clone git://git.gnome.org/freedesktop-sdk-base
                        COMMAND cd freedesktop-sdk-base && git fetch origin
@@ -260,7 +261,7 @@ macro(createBaseImages)
     add_custom_command(OUTPUT ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE}
                        COMMAND make -j5
                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/freedesktop-sdk-base
-                       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/freedesktop-sdk-base
+                       DEPENDS "${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/Makefile"
     )
 
 endmacro()
