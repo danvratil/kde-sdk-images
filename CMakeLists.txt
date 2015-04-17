@@ -141,6 +141,7 @@ macro(createFreedesktopPlatformBase)
 endmacro()
 
 macro(parseSPECFile package specFile sourcesList buildRequiresList)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E echo_append "-- Parsing SPEC file for package ${package}")
     # The path must be relative - we use it as both target name and actual file path,
     # but absolute paths differ here and in chroot in build.sh
     execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --qf "%{NAME}=packages/RPMS/%{ARCH}/%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm;"
@@ -171,6 +172,8 @@ macro(parseSPECFile package specFile sourcesList buildRequiresList)
             endif()
         endif()
     endforeach()
+
+    execute_process(COMMAND ${CMAKE_COMMAND} -E echo " -- done")
 endmacro()
 
 macro(generatePackageTargets platform packages)
@@ -185,7 +188,6 @@ macro(generatePackageTargets platform packages)
         endif()
 
         parseSPECFile(${package} ${specFile} ${package}_sources ${package}_buildRequires)
-        message(STATUS "Parsing SPEC file for package ${package} -- done")
     endforeach()
 
 
