@@ -6,6 +6,7 @@ set(QT5_VERSION "5.4.1")
 set(KF5_VERSION "5.9.0")
 set(BUILD_ARCH "x86_64")
 set(BASE_HASH "8e44c998adbf1546c45cf733c688fed74e8ddc89")
+set(NOARCH "packages/RPMS/noarch")
 
 set(IMAGE_DIR "${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/images/${BUILD_ARCH}")
 
@@ -134,17 +135,25 @@ macro(createFreedesktopPlatformBase)
     )
 endmacro()
 
-macro(parseSPECFile specFile providesList sourcesList buildRequiresList)
-    execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --qf "${CMAKE_SOURCE_DIR}/RPMS/%{ARCH}/%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm;"
+macro(parseSPECFile package specFile sourcesList buildRequiresList)
+    # The path must be relative - we use it as both target name and actual file path,
+    # but absolute paths differ here and in chroot in build.sh
+    execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --qf "%{NAME}=packages/RPMS/%{ARCH}/%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm;"
                     OUTPUT_VARIABLE rawProvidesList)
     execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --buildrequires
-                    OUTPUT_VARIABLE ${buildRequiresList})
+                    OUTPUT_VARIABLE rawBuildRequiresList)
     execute_process(COMMAND rpmspec -D "dist .sdk" -P ${specFile}
                     OUTPUT_VARIABLE parsedFile)
 
-    foreach (rawProvides ${rawProvidesList})
-        LIST(APPEND ${providesList} "${rawProvides}")
+    foreach(provides ${rawProvidesList})
+        STRING(REGEX MATCH "^([0-9a-zA-Z_-]+)=(.*)$" match ${provides})
+        set(${CMAKE_MATCH_1}_target ${CMAKE_MATCH_2})
+        LIST(APPEND ${package}_targets ${CMAKE_MATCH_1})
     endforeach()
+
+    STRING(REGEX REPLACE ";" "\\\\;" rawBuildRequiresList "${rawBuildRequiresList}")
+    STRING(REGEX REPLACE "\n" ";" ${buildRequiresList} "${rawBuildRequiresList}")
+
 
     STRING(REGEX REPLACE ";" "\\\\;" parsedFile "${parsedFile}")
     STRING(REGEX REPLACE "\n" ";" parsedFile "${parsedFile}")
@@ -157,7 +166,6 @@ macro(parseSPECFile specFile providesList sourcesList buildRequiresList)
             endif()
         endif()
     endforeach()
-    message(STATUS "\t* Parsing SPEC file -- done")
 endmacro()
 
 macro(generatePackageTargets platform packages)
@@ -166,15 +174,20 @@ macro(generatePackageTargets platform packages)
     endif()
 
     foreach(package ${packages})
-        message(STATUS "Preparing package ${package}")
         set(specFile "${CMAKE_SOURCE_DIR}/packages/SPECS/${platform}-platform/${package}.spec")
         if (NOT EXISTS "${specFile}")
             message(FATAL_ERROR "SPEC file for package ${package} does not exist: ${specFile}")
         endif()
 
-        set(${package}_provides "")
+        parseSPECFile(${package} ${specFile} ${package}_sources ${package}_buildRequires)
+        message(STATUS "Parsing SPEC file for package ${package} -- done")
+    endforeach()
 
-        parseSPECFile(${specFile} ${package}_provides ${package}_sources ${package}_buildRequires)
+
+    foreach(package ${packages})
+        message(STATUS "Preparing package ${package}")
+        # Use relative path to SPEC file, because absolute paths differ here and in the build.sh chroot
+        set(specFile "packages/SPECS/${platform}-platform/${package}.spec")
 
         if (${package}_sources)
             foreach(source ${${package}_sources})
