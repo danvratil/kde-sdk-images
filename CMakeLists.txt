@@ -44,6 +44,7 @@ set(freedesktop_PACKAGES
     hicolor-icon-theme
     hunspell
     hunspell-en
+    libdatrie
     libdrm
     libepoxy
     liberation-fonts
