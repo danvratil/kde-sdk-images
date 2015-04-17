@@ -29,6 +29,7 @@ BuildRequires: libXcomposite-dev
 BuildRequires: libXdamage-dev
 BuildRequires: gobject-introspection-dev
 BuildRequires: gtk-doc-stub
+BuildRequires: hicolor-icon-theme
 
 # required for icon theme apis to work
 Requires: hicolor-icon-theme
