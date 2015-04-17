@@ -32,6 +32,15 @@ BuildRequires: libwayland-client-dev
 BuildRequires: libwayland-server-dev
 BuildRequires: llvm-dev
 
+Requires: mesa-dri-drivers
+Requires: mesa-filesystem
+Requires: mesa-libEGL
+Requires: mesa-libgbm
+Requires: mesa-libglapi
+Requires: mesa-libGL
+Requires: mesa-libGLES
+Requires: mesa-libwayland-egl
+
 %description
 Mesa
 
@@ -212,6 +221,11 @@ find $RPM_BUILD_ROOT -name \*.la | xargs rm -f
 %postun libgbm -p /sbin/ldconfig
 %post libwayland-egl -p /sbin/ldconfig
 %postun libwayland-egl -p /sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc docs/COPYING
+# empty
 
 %files libGL
 %defattr(-,root,root,-)
