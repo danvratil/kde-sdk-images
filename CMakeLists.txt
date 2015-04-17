@@ -36,6 +36,7 @@ set(freedesktop_PACKAGES
     gstreamer1-plugins-base
     gstreamer1
     gtk-doc-stub
+    gtk2
     harfbuzz
     hicolor-icon-theme
     hunspell
