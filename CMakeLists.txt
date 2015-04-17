@@ -21,6 +21,7 @@ set(freedesktop_PACKAGES
 
     abattis-cantarell-fonts
     aspell
+    atk
     cairo
     dbus-glib
     dbus
@@ -28,6 +29,7 @@ set(freedesktop_PACKAGES
     desktop-file-utils
     fontconfig
     freetype
+    gdk-pixbuf2
     glib2
     gnu-free-fonts
     gobject-introspection
@@ -74,6 +76,7 @@ set(freedesktop_PACKAGES
     llvm
     mesa
     orc
+    pango
     pixman
     pulseaudio
     SDL2
