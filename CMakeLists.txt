@@ -51,6 +51,7 @@ set(freedesktop_PACKAGES
     libpciaccess
     libproxy
     libSM
+    libthai
     libX11
     libXau
     libxcb
