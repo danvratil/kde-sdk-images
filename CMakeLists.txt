@@ -197,7 +197,7 @@ macro(generatePackageTargets platform packages)
             add_custom_command(
                 OUTPUT ${destFile}
                 COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Downloading source for ${package}\"
-                COMMAND wget ${source} -O ${destFile}
+                COMMAND if [ ! -e ${destFile} ]; then wget ${source} -O ${destFile}\; fi
                 DEPENDS ${specFile}
             )
         endforeach()
