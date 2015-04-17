@@ -126,20 +126,6 @@ macro(createPlatform name)
     )
 endmacro()
 
-macro(createFreedesktopPlatformBase)
-    add_custom_command(
-        OUTPUT freedesktop-platform-base-0.1-1.sdk.noarch.rpm
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building freedesktop-platform-base"
-        COMMAND rm -rf packages/freedesktop-platform
-        COMMAND mkdir -p packages/freedesktop-platform
-        COMMAND tar -C packages/freedesktop-platform -xzf ${PLATFORM_BASE_IMAGE}
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE}
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpmbuild -ba ${CMAKE_CURRENT_SOURCE_DIR}/packages/SPECS/freedesktop-platform/freedesktop-platform-base.spec
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
-        DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE}
-    )
-endmacro()
-
 macro(parseSPECFile package specFile sourcesList buildRequiresList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo_append "-- Parsing SPEC file for package ${package}")
     # The path must be relative - we use it as both target name and actual file path,
@@ -295,9 +281,6 @@ createSDK(freedesktop)
 # kde-sdk.tar.gz, kde-sdk-rpmdb.tar.gz
 #createSDK(kde)
 
-# freedesktop-platform-bae-0.1-1.sdk.noarch.rpm
-createFreedesktopPlatformBase()
-
 # freedesktop-platform.tar.gz freedesktop-platform-rpmdb.tar.gz
 createPlatform(freedesktop)
 # kde-platform.tar.gz kde-platform-rpmdb.tar.gz
@@ -310,3 +293,4 @@ createPlatform(freedesktop)
 add_custom_target(kde-sdk-images ALL
     DEPENDS freedesktop-sdk.tar.gz freedesktop-sdk-rpmdb.tar.gz
 )
+
