@@ -103,9 +103,9 @@ macro(createSDK name)
         OUTPUT ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE} > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh smart install -y ${NOARCH}/${sdkname}-0.1-1.sdk.noarch.rpm
-        COMMAND rm -rf ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
-        COMMAND tar --transform 's,^build/root/usr,files,S' -czf ${sdkname}.tar.gz build/root/usr --owner=root > /dev/null
-        COMMAND tar --transform 's,^build/var,files,S' -czf ${sdkname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
+        COMMAND ${CMAKE_COMMAND} -E remove -f ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
+        COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${sdkname}.tar.gz build/root/usr --owner=root > /dev/null
+        COMMAND tar --transform "s,^build/var,files,S" -czf ${sdkname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
         DEPENDS ${sdkname} ${SDK_BASE_IMAGE}
         VERBATIM
