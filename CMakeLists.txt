@@ -107,7 +107,7 @@ macro(createSDK name)
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${sdkname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${sdkname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
-        DEPENDS ${sdkname} ${SDK_BASE_IMAGE}
+        DEPENDS ${${sdkname}_target} ${SDK_BASE_IMAGE}
         VERBATIM
     )
 endmacro()
@@ -246,6 +246,9 @@ macro(generatePackageTargets platform packages)
             COMMAND ${CMAKE_SOURCE_DIR}/clear_root.sh
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
             DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${depsPackages}
+        )
+        add_custom_target(${package}-build
+            DEPENDS ${targets}
         )
         add_dependencies(${package} ${package}-build)
 
