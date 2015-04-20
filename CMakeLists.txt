@@ -203,7 +203,7 @@ macro(generatePackageTargets platform packages)
             add_custom_command(
                 OUTPUT ${destFile}
                 COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Downloading source for ${package}\"
-                COMMAND if [ ! -e ${destFile} ]; then wget ${source} -O ${destFile}\; fi
+                COMMAND if [ -e ${destFile} ]; then echo \"${destFile} already exists\"\; else wget ${source} -O ${destFile}\; fi
                 DEPENDS ${specFile}
             )
         endforeach()
@@ -241,7 +241,7 @@ macro(generatePackageTargets platform packages)
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Installing dependencies ...\"
             COMMAND ${installDeps}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Building ...\"
-            COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile}
+            COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile} | tee packages/LOGS/${package}.build
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/clear_root.sh
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
