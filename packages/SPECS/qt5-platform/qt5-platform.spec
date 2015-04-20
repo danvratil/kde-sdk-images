@@ -31,7 +31,6 @@ BuildRequires:  qt5-qtx11extras-dev
 BuildRequires:  qt5-qtxmlpatterns
 
 
-
 Requires:       freedesktop-platform
 
 Requires:       qt5-qtbase

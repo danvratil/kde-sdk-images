@@ -1,0 +1,66 @@
+diff --git a/src/plugins/platforms/xcb/qxcbscreen.cpp b/src/plugins/platforms/xcb/qxcbscreen.cpp
+index 7136455..e848c0d 100644
+--- a/src/plugins/platforms/xcb/qxcbscreen.cpp
++++ b/src/plugins/platforms/xcb/qxcbscreen.cpp
+@@ -214,6 +214,9 @@ QXcbScreen::QXcbScreen(QXcbConnection *connection, xcb_screen_t *scr,
+     }
+ 
+     m_cursor = new QXcbCursor(connection, this);
++
++    if (!qEnvironmentVariableIsSet("QT_DEVICE_PIXEL_RATIO"))
++        xSettings()->registerCallbackForProperty("Gdk/WindowScalingFactor", xSettingsDPRChanged, this);
+ }
+ 
+ QXcbScreen::~QXcbScreen()
+@@ -343,6 +346,11 @@ qreal QXcbScreen::devicePixelRatio() const
+         return override_dpr;
+     if (auto_dpr)
+         return m_devicePixelRatio;
++
++    const int xSettings_dpr = xSettings()->setting("Gdk/WindowScalingFactor").toInt();
++    if (xSettings_dpr > 0)
++        return xSettings_dpr;
++
+     return 1.0;
+ }
+ 
+@@ -651,6 +659,17 @@ bool QXcbScreen::xResource(const QByteArray &identifier,
+     return false;
+ }
+ 
++void QXcbScreen::xSettingsDPRChanged(QXcbScreen *screen, const QByteArray &name,
++                                     const QVariant &property, void *handle)
++{
++    Q_ASSERT(name == "Gdk/WindowScalingFactor");
++    Q_UNUSED(name);
++    Q_UNUSED(property);
++    Q_UNUSED(handle);
++
++    screen->updateGeometry(XCB_TIME_CURRENT_TIME);
++}
++
+ void QXcbScreen::readXResources()
+ {
+     int offset = 0;
+@@ -700,6 +719,7 @@ QXcbXSettings *QXcbScreen::xSettings() const
+         QXcbScreen *self = const_cast<QXcbScreen *>(this);
+         self->m_xSettings = new QXcbXSettings(self);
+     }
++
+     return m_xSettings;
+ }
+ QT_END_NAMESPACE
+diff --git a/src/plugins/platforms/xcb/qxcbscreen.h b/src/plugins/platforms/xcb/qxcbscreen.h
+index e9ab2ed..7eff52e 100644
+--- a/src/plugins/platforms/xcb/qxcbscreen.h
++++ b/src/plugins/platforms/xcb/qxcbscreen.h
+@@ -108,6 +108,9 @@ private:
+     static bool xResource(const QByteArray &identifier,
+                           const QByteArray &expectedIdentifier,
+                           QByteArray &stringValue);
++    static void xSettingsDPRChanged(QXcbScreen *screen, const QByteArray &name,
++                                    const QVariant &property, void *handle);
++
+     void sendStartupMessage(const QByteArray &message) const;
+ 
+     xcb_screen_t *m_screen;

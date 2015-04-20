@@ -95,6 +95,22 @@ set(freedesktop_PACKAGES
     xorg-x11-xtrans-devel
 )
 
+set(qt5_PACKAGES
+    qt5-platform
+    qt5-sdk
+
+    at-spi2-core
+    alsa-lib
+    xcb-util
+    xcb-util-image
+    xcb-util-keysyms
+    xcb-util-renderutil
+    xcb-util-wm
+    xkeyboard-config
+
+    qt5-qtbase
+)
+
 
 ######## Custom Macros #########
 macro(createSDK name)
@@ -280,25 +296,18 @@ endmacro()
 # it will generate the ${SDK_BASE_IMAGE} and ${PLATFORM_BASE_IMAGE} files
 createBaseImages()
 
-# Generates targets for all listed packages in freedesktop-platform
 generatePackageTargets("freedesktop" "${freedesktop_PACKAGES}")
-
-
-# freedesktop-sdk.tar.gz freedesktop-sdk-rpmdb.tar.gz
-createSDK(freedesktop)
-# kde-sdk.tar.gz, kde-sdk-rpmdb.tar.gz
-#createSDK(kde)
-
-# freedesktop-platform.tar.gz freedesktop-platform-rpmdb.tar.gz
 createPlatform(freedesktop)
-# kde-platform.tar.gz kde-platform-rpmdb.tar.gz
-#createPlatform(kde)
+createSDK(freedesktop)
 
+generatePackageTargets("qt5" "${qt5_PACKAGES}")
+createPlatform(qt5)
+createSDK(qt5)
 
-#add_custom_target(kde-sdk-images ALL
-#    DEPENDS kde-sdk.tar.gz kde-sdk-rpmdb.tar.gz
-#)
 add_custom_target(kde-sdk-images ALL
-    DEPENDS freedesktop-sdk.tar.gz freedesktop-sdk-rpmdb.tar.gz
+    DEPENDS freedesktop-sdk.tar.gz
+            freedesktop-sdk-rpmdb.tar.gz
+            qt5-sdk.tar.gz
+            qt5-sdk-rpmdb.tar.gz
 )
 

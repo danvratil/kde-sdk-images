@@ -10,14 +10,7 @@ License:        LGPLv2+
 URL:            http://www.linuxfoundation.org/en/AT-SPI_on_D-Bus
 Source0:        http://download.gnome.org/sources/at-spi2-core/%{release_version}/%{name}-%{version}.tar.xz
 
-BuildRequires:  freedesktop-sdk-base
-BuildRequires:  dbus-dev
-BuildRequires:  dbus-glib-dev
-BuildRequires:  glib2-dev
-BuildRequires:  gobject-introspection-dev
-BuildRequires:  libXtst-dev
-BuildRequires:  libXext-dev
-BuildRequires:  libXi-dev
+BuildRequires:  freedesktop-sdk
 
 Requires:       dbus
 

@@ -10,15 +10,7 @@ Release: 1%{?dist}
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?snap:1}
-Source0: http://download.qt-project.org/snapshots/qt/5.4/%{version}-%{pre}/%{snap}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
-%endif
 
 # header file to workaround multilib issue
 # https://bugzilla.redhat.com/show_bug.cgi?id=1036956
@@ -92,42 +84,26 @@ Source1: macros.qt5
 # RPM drag in gtk2 as a dependency for the GTK+ 2 dialog support.
 %global __requires_exclude_from ^%{_qt5_plugindir}/platformthemes/.*$
 
-# for %%check
-BuildRequires: cmake
-BuildRequires: cups-devel
-BuildRequires: desktop-file-utils
-BuildRequires: findutils
-BuildRequires: libjpeg-devel
-BuildRequires: libmng-devel
-BuildRequires: libtiff-devel
-BuildRequires: pkgconfig(alsa)
-BuildRequires: pkgconfig(dbus-1)
-BuildRequires: pkgconfig(libdrm)
-BuildRequires: pkgconfig(fontconfig)
-BuildRequires: pkgconfig(gl)
-BuildRequires: pkgconfig(glib-2.0)
-BuildRequires: pkgconfig(gtk+-2.0)
-# xcb-sm
-BuildRequires: pkgconfig(ice) pkgconfig(sm)
-BuildRequires: pkgconfig(libpng)
-BuildRequires: pkgconfig(libudev)
-BuildRequires: pkgconfig(NetworkManager)
-BuildRequires: pkgconfig(openssl)
-BuildRequires: pkgconfig(libpulse) pkgconfig(libpulse-mainloop-glib)
-BuildRequires: pkgconfig(xcb-xkb) >= 1.10
-BuildRequires: pkgconfig(xkbcommon) >= 0.4.1
-BuildRequires: pkgconfig(xkbcommon-x11) >= 0.4.1
-BuildRequires: pkgconfig(xkeyboard-config)
+BuildRequires: freedesktop-sdk
 
-BuildRequires: pkgconfig(atspi-2)
-BuildRequires: pkgconfig(gbm)
-BuildRequires: pkgconfig(sqlite3) >= 3.7
-BuildRequires: pkgconfig(harfbuzz) >= 0.9.31
-BuildRequires: pkgconfig(icu-i18n)
-BuildRequires: pkgconfig(libpcre) >= 8.30
-BuildRequires: pkgconfig(xcb-xkb)
-BuildRequires: pkgconfig(xcb) pkgconfig(xcb-glx) pkgconfig(xcb-icccm) pkgconfig(xcb-image) pkgconfig(xcb-keysyms) pkgconfig(xcb-renderutil)
-BuildRequires: pkgconfig(zlib)
+# for %%check
+#BuildRequires: cups-dev
+
+BuildRequires: alsa-lib-dev
+
+# xcb-sm
+#BuildRequires: libudev-dev
+#BuildRequires: NetworkManager-dev
+#BuildRequires: pulseaudio-mainloop-glib
+
+#BuildRequires: libxcb-xkb-dev
+
+BuildRequires: at-spi2-core-dev
+
+BuildRequires: xcb-util-wm-dev
+BuildRequires: xcb-util-image-dev
+BuildRequires: xcb-util-keysyms-dev
+BuildRequires: xcb-util-renderutil-dev
 
 Conflicts: qt < 1:4.8.6-10
 
@@ -142,12 +118,11 @@ Qt is a software toolkit for developing applications.
 This package contains base tools, like string, xml, and network
 handling.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-gui%{?_isa}
-Requires: pkgconfig(gl)
-%description devel
+%description dev
 %{summary}.
 
 %package doc
@@ -155,7 +130,7 @@ Summary: API documentation for %{name}
 License: GFDL
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -168,10 +143,8 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %package static
 Summary: Static library files for %{name}
-Requires: %{name}-devel%{?_isa} = %{version}-%{release}
-Requires: pkgconfig(fontconfig)
-Requires: pkgconfig(glib-2.0)
-Requires: pkgconfig(zlib)
+Requires: %{name}-dev%{?_isa} = %{version}-%{release}
+Requires: freedesktop-platform
 %description static
 %{summary}.
 
@@ -487,7 +460,7 @@ popd
 %{_qt5_docdir}/qtwidgets/
 %{_qt5_docdir}/qtxml/
 
-%files devel
+%files dev
 %{rpm_macros_dir}/macros.qt5
 %if "%{_qt5_bindir}" != "%{_bindir}"
 %dir %{_qt5_bindir}
