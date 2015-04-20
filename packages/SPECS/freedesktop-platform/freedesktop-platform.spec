@@ -9,6 +9,7 @@ BuildArch: noarch
 
 BuildRequires: freedesktop-platform-base
 
+BuildRequires: abattis-cantarell-fonts
 BuildRequires: dbus-libs
 BuildRequires: dejavu-fonts
 BuildRequires: desktop-file-utils
@@ -20,6 +21,8 @@ BuildRequires: google-crosextra-carlito-fonts
 BuildRequires: gstreamer1
 BuildRequires: gstreamer1-plugins-base
 BuildRequires: hicolor-icon-theme
+BuildRequires: hunspell-dev
+BuildRequires: hunspell-en
 BuildRequires: libICE-dev
 BuildRequires: libXpm
 BuildRequires: libXv
