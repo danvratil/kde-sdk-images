@@ -119,14 +119,14 @@ macro(createPlatform name)
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building ${platformname}"
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup_root.sh ${PLATFORM_BASE_IMAGE} > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh `cat ${platformname}-packages`
-        COMMAND ${CMAKE_COMMAND} -E tar --transform 's,^build/root/usr,files,S' -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
-        COMMAND ${CMAKE_COMMAND} -E tar --transform 's,^build/var,files,S' -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
+        COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
+        COMMAND tar --transform "s,^build/var,files,S" -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
-        DEPENDS ${platformname} ${PLATFORM_BASE_IMAGE}
+        DEPENDS ${${platformname}_target} ${PLATFORM_BASE_IMAGE}
     )
 endmacro()
 
-macro(parseSPECFile package specFile sourcesList buildRequiresList)
+macro(parseSPECFile package specFile sourcesList depsList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo_append "-- Parsing SPEC file for package ${package}")
     # The path must be relative - we use it as both target name and actual file path,
     # but absolute paths differ here and in chroot in build.sh
@@ -134,6 +134,8 @@ macro(parseSPECFile package specFile sourcesList buildRequiresList)
                     OUTPUT_VARIABLE rawProvidesList)
     execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --buildrequires
                     OUTPUT_VARIABLE rawBuildRequiresList)
+#    execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --requires
+#                    OUTPUT_VARIABLE rawRequiresList)
     execute_process(COMMAND rpmspec -D "dist .sdk" -P ${specFile}
                     OUTPUT_VARIABLE parsedFile)
 
@@ -144,8 +146,12 @@ macro(parseSPECFile package specFile sourcesList buildRequiresList)
     endforeach()
 
     STRING(REGEX REPLACE ";" "\\\\;" rawBuildRequiresList "${rawBuildRequiresList}")
-    STRING(REGEX REPLACE "\n" ";" ${buildRequiresList} "${rawBuildRequiresList}")
+    STRING(REGEX REPLACE "\n" ";" buildRequiresList "${rawBuildRequiresList}")
+    LIST(APPEND ${depsList} ${buildRequiresList})
 
+#    STRING(REGEX REPLACE ";" "\\\\;" rawRequiresList "${rawRequiresList}")
+#    STRING(REGEX REPLACE "\n" ";" requiresList "${rawRequiresList}")
+#    LIST(APPEND ${depsList} ${requiresList})
 
     STRING(REGEX REPLACE ";" "\\\\;" parsedFile "${parsedFile}")
     STRING(REGEX REPLACE "\n" ";" parsedFile "${parsedFile}")
@@ -173,7 +179,7 @@ macro(generatePackageTargets platform packages)
             message(FATAL_ERROR "SPEC file for package ${package} does not exist: ${specFile}")
         endif()
 
-        parseSPECFile(${package} ${specFile} ${package}_sources ${package}_buildRequires)
+        parseSPECFile(${package} ${specFile} ${package}_sources ${package}_deps)
     endforeach()
 
 
@@ -209,14 +215,16 @@ macro(generatePackageTargets platform packages)
             add_dependencies(${package} ${package}-sources)
         endif()
 
-        set(buildRequiresPackages "")
-        foreach(br ${${package}_buildRequires})
-            LIST(APPEND buildRequiresPackages ${${br}_target})
+        set(depsPackages "")
+        foreach(dep ${${package}_deps})
+            LIST(APPEND depsPackages ${${dep}_target})
         endforeach()
-        if (buildRequiresPackages)
-            set(installBuildRequires ${CMAKE_SOURCE_DIR}/build.sh smart install -y ${buildRequiresPackages})
+        if (depsPackages)
+            # smart does not like duplicates
+            LIST(REMOVE_DUPLICATES depsPackages)
+            set(installDeps ${CMAKE_SOURCE_DIR}/build.sh smart install -y ${depsPackages})
         else()
-            set(installBuildRequires true)
+            set(installDeps true)
             set(depTargets "")
         endif()
 
@@ -231,16 +239,13 @@ macro(generatePackageTargets platform packages)
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Preparing build root ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE} > /dev/null
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Installing dependencies ...\"
-            COMMAND ${installBuildRequires}
+            COMMAND ${installDeps}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Building ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/clear_root.sh
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
-            DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${buildRequiresPackages}
-        )
-        add_custom_target(${package}-build
-                          DEPENDS ${targets}
+            DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${depsPackages}
         )
         add_dependencies(${package} ${package}-build)
 
