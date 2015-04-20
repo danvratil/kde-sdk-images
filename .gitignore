@@ -3,6 +3,7 @@ CMakeFiles
 cmake_install.cmake
 gnome-sdk-helper
 Makefile
+packages/LOGS/*
 packages/SOURCES/*.zip
 packages/SOURCES/*.tgz
 packages/SOURCES/*.tar.gz
