@@ -19,14 +19,14 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qttools-dev
 
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kxmlgui-devel
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kxmlgui-dev
 
 Requires:       kf5-filesystem
 
@@ -34,16 +34,16 @@ Requires:       kf5-filesystem
 KBookmarks lets you access and manipulate bookmarks stored using the
 XBEL format.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfigwidgets-devel
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kxmlgui-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-kconfigwidgets-dev
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kxmlgui-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -70,7 +70,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5Bookmarks.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kbookmarks_version.h
 %{_kf5_includedir}/KBookmarks
 %{_kf5_libdir}/libKF5Bookmarks.so

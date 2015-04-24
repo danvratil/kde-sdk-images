@@ -21,22 +21,22 @@ Patch0:         frameworkintegration-5.9-fix-native-dialogs.patch
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtx11extras-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtx11extras-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-knotifications-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  oxygen-fonts-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-knotifications-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+#BuildRequires:  oxygen-fonts-dev
 
-BuildRequires:  libXcursor-devel
+BuildRequires:  libXcursor-dev
 
 Requires:       kf5-filesystem
-Requires:       oxygen-fonts
+#Requires:       oxygen-fonts
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -53,15 +53,15 @@ Conflicts:      %{name} < 5.3.0-2
 %description    libs
 %{summary}.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kconfigwidgets-devel
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kconfigwidgets-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -94,7 +94,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %files libs
 %{_kf5_libdir}/libKF5Style.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/frameworkintegration_version.h
 %{_kf5_includedir}/KStyle
 %{_kf5_libdir}/libKF5Style.so

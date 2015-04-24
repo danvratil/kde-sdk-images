@@ -19,20 +19,20 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  kf5-attica-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  kf5-attica-dev
 
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kitemviews-devel
-BuildRequires:  kf5-ktextwidgets-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kxmlgui-devel
+BuildRequires:  kf5-karchive-dev
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kitemviews-dev
+BuildRequires:  kf5-ktextwidgets-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kxmlgui-dev
 
 Requires:       kf5-filesystem
 
@@ -40,17 +40,17 @@ Requires:       kf5-filesystem
 KDE Frameworks 5 Tier 3 module for downloading and sharing additional
 application data like plugins, themes, motives, etc.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-attica-devel
-Requires:       kf5-karchive-devel
-Requires:       kf5-kio-devel
-Requires:       kf5-kxmlgui-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-attica-dev
+Requires:       kf5-karchive-dev
+Requires:       kf5-kio-dev
+Requires:       kf5-kxmlgui-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -78,7 +78,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libdir}/libKF5NewStuff.so.*
 %{_kf5_datadir}/kf5/knewstuff/
 
-%files devel
+%files dev
 %{_kf5_includedir}/knewstuff_version.h
 %{_kf5_includedir}/KNewStuff3
 %{_kf5_libdir}/libKF5NewStuff.so

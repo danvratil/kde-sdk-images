@@ -20,7 +20,7 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
 Requires:       kf5-filesystem
 
@@ -28,13 +28,13 @@ Requires:       kf5-filesystem
 Attica is a Qt library that implements the Open Collaboration Services
 API version 1.4.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
+%description    dev
 %{summary}.
 
 
@@ -61,7 +61,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc ChangeLog
 %{_kf5_libdir}/libKF5Attica.so.*
 
-%files devel
+%files dev
 %{_kf5_libdir}/cmake/KF5Attica/
 %{_kf5_includedir}/attica_version.h
 %{_kf5_includedir}/Attica/

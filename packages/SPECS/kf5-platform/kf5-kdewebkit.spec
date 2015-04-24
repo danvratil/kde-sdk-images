@@ -19,29 +19,29 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtwebkit-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtwebkit-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kjobwidgets-devel
-BuildRequires:  kf5-kparts-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwallet-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kjobwidgets-dev
+BuildRequires:  kf5-kparts-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwallet-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 integration module for the HTML rendering engine WebKit.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtwebkit-devel
+Requires:       qt5-qtwebkit-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -67,7 +67,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5WebKit.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kdewebkit_version.h
 %{_kf5_includedir}/KDEWebKit
 %{_kf5_libdir}/libKF5WebKit.so

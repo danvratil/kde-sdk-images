@@ -19,16 +19,16 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kauth-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kcodecs-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kdoctools-devel
-BuildRequires:  kf5-kguiaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
+BuildRequires:  kf5-kauth-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kcodecs-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kdoctools-dev
+BuildRequires:  kf5-kguiaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
 
 Requires:       kf5-filesystem
 
@@ -36,18 +36,18 @@ Requires:       kf5-filesystem
 KConfigWidgets provides easy-to-use classes to create configuration dialogs, as
 well as a set of widgets which uses KConfig to store their settings.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kauth-devel
-Requires:       kf5-kcodecs-devel
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kguiaddons-devel
-Requires:       kf5-ki18n-devel
-Requires:       kf5-kwidgetsaddons-devel
+Requires:       kf5-kauth-dev
+Requires:       kf5-kcodecs-dev
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kguiaddons-dev
+Requires:       kf5-ki18n-dev
+Requires:       kf5-kwidgetsaddons-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -78,7 +78,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_mandir}/man1/*
 %{_kf5_datadir}/locale/*/kf5_entry.desktop
 
-%files devel
+%files dev
 %{_kf5_includedir}/kconfigwidgets_version.h
 %{_kf5_includedir}/KConfigWidgets
 %{_kf5_libdir}/libKF5ConfigWidgets.so

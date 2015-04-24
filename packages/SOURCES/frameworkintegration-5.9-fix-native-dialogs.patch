@@ -1,0 +1,320 @@
+commit 26406a9aa01d6f4f01a3f084b51451de8385c8fc
+Author: David Rosca <nowrep@gmail.com>
+Date:   Fri Apr 17 09:35:24 2015 +0200
+
+    Fix native file dialogs from widgets QFileDialog
+    
+    There were two issues:
+     * File dialogs opened with exec() and without parent were
+       opened, but any user-interaction was blocked in a way that
+       no file could be selected nor the dialog closed.
+    
+     * File dialogs opened with open() or show() with parent were
+       not opened at all.
+    
+    The first issue was caused by first calling show() and then exec()
+    on the native dialog.
+    The second one simply because in the case of dialogs with parent
+    show() wasn't called.
+    
+    This fixes it that the show() is always called and hide() is called
+    before exec().
+    
+    This also adds unittests for file dialogs.
+    
+    REVIEW: 123335
+
+diff --git a/autotests/CMakeLists.txt b/autotests/CMakeLists.txt
+index 00e4a41..d110adb 100644
+--- a/autotests/CMakeLists.txt
++++ b/autotests/CMakeLists.txt
+@@ -1,12 +1,17 @@
+ include(ECMMarkAsTest)
+ 
+ find_package(Qt5Test ${REQUIRED_QT_VERSION} CONFIG QUIET)
++find_package(Qt5Qml ${REQUIRED_QT_VERSION} CONFIG QUIET)
+ 
+ if(NOT Qt5Test_FOUND)
+     message(STATUS "Qt5Test not found, autotests will not be built.")
+     return()
+ endif()
+ 
++if(NOT Qt5Qml_FOUND)
++    message(STATUS "Qt5Qml not found, QML autotests will not be built.")
++endif()
++
+ include_directories( ${Qt5Gui_PRIVATE_INCLUDE_DIRS} )
+ 
+ set(CONFIGFILE "${CMAKE_CURRENT_SOURCE_DIR}/kdeplatformtheme_kdeglobals")
+@@ -51,3 +56,8 @@ frameworkintegration_tests(
+ frameworkintegration_tests(
+   ksni_unittest
+ )
++
++if(Qt5Qml_FOUND)
++    frameworkintegration_tests(kfiledialogqml_unittest)
++    target_link_libraries(kfiledialogqml_unittest Qt5::Qml)
++endif()
+diff --git a/autotests/kfiledialog_unittest.cpp b/autotests/kfiledialog_unittest.cpp
+index 45a139a..30392bf 100644
+--- a/autotests/kfiledialog_unittest.cpp
++++ b/autotests/kfiledialog_unittest.cpp
+@@ -111,6 +111,60 @@ private Q_SLOTS:
+         }
+     }
+ 
++    void testOpenDialog()
++    {
++        // Open parentless
++        {
++            QFileDialog dialog;
++            dialog.open();
++
++            KFileWidget *fw = findFileWidget();
++            QVERIFY(fw);
++            QCOMPARE(fw->isVisible(), true);
++            fw->slotCancel();
++        }
++        // Open with parent
++        {
++            QWidget w;
++            w.show();
++
++            QFileDialog dialog(&w);
++            dialog.open();
++
++            KFileWidget *fw = findFileWidget();
++            QVERIFY(fw);
++            QCOMPARE(fw->isVisible(), true);
++            fw->slotCancel();
++        }
++    }
++
++    void testShowDialog()
++    {
++        // Show parentless
++        {
++            QFileDialog dialog;
++            dialog.show();
++
++            KFileWidget *fw = findFileWidget();
++            QVERIFY(fw);
++            QCOMPARE(fw->isVisible(), true);
++            fw->slotCancel();
++        }
++        // Show with parent
++        {
++            QWidget w;
++            w.show();
++
++            QFileDialog dialog(&w);
++            dialog.show();
++
++            KFileWidget *fw = findFileWidget();
++            QVERIFY(fw);
++            QCOMPARE(fw->isVisible(), true);
++            fw->slotCancel();
++        }
++    }
++
+     void testSetFileMode_data()
+     {
+         QTest::addColumn<QFileDialog::FileMode>("qtFileMode");
+diff --git a/autotests/kfiledialogqml_unittest.cpp b/autotests/kfiledialogqml_unittest.cpp
+new file mode 100644
+index 0000000..f805ef2
+--- /dev/null
++++ b/autotests/kfiledialogqml_unittest.cpp
+@@ -0,0 +1,92 @@
++/*  This file is part of the KDE libraries
++ *  Copyright 2014 Dominik Haumann <dhaumann@kde.org>
++ *  Copyright 2015 David Rosca <nowrep@gmail.com>
++ *
++ *  This library is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU Lesser General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License or ( at
++ *  your option ) version 3 or, at the discretion of KDE e.V. ( which shall
++ *  act as a proxy as in section 14 of the GPLv3 ), any later version.
++ *
++ *  This library is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  Library General Public License for more details.
++ *
++ *  You should have received a copy of the GNU Lesser General Public License
++ *  along with this library; see the file COPYING.LIB.  If not, write to
++ *  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
++ *  Boston, MA 02110-1301, USA.
++ */
++
++#include <QTest>
++#include <QQmlEngine>
++#include <QQmlComponent>
++#include <KFileWidget>
++
++class KFileDialogQml_UnitTest : public QObject
++{
++    Q_OBJECT
++
++private Q_SLOTS:
++    void initTestCase()
++    {
++    }
++
++    void cleanupTestCase()
++    {
++    }
++
++    void testShowDialogParentless()
++    {
++        KFileWidget *fw;
++        {
++            QQmlEngine engine;
++            QQmlComponent component(&engine);
++            component.loadUrl(QUrl::fromLocalFile(QFINDTESTDATA("qml/filedialog_parentless.qml")));
++            component.create();
++
++            fw = findFileWidget();
++            QVERIFY(fw);
++            QCOMPARE(fw->isVisible(), true);
++            fw->slotCancel();
++        }
++        delete fw;
++    }
++
++    void testShowDialogWithParent()
++    {
++        KFileWidget *fw;
++        {
++            QQmlEngine engine;
++            QQmlComponent component(&engine);
++            component.loadUrl(QUrl::fromLocalFile(QFINDTESTDATA("qml/filedialog_withparent.qml")));
++            component.create();
++
++            fw = findFileWidget();
++            QVERIFY(fw);
++            QCOMPARE(fw->isVisible(), true);
++            fw->slotCancel();
++        }
++        delete fw;
++    }
++
++private:
++    static KFileWidget *findFileWidget()
++    {
++        QList<KFileWidget *> widgets;
++        foreach (QWidget *widget, QApplication::topLevelWidgets()) {
++            KFileWidget *fw = widget->findChild<KFileWidget *>();
++            if (fw) {
++                widgets.append(fw);
++            }
++        }
++        Q_ASSERT(widgets.count() == 1);
++        return (widgets.count() == 1) ? widgets.first() : Q_NULLPTR;
++    }
++};
++
++QTEST_MAIN(KFileDialogQml_UnitTest)
++
++#include "kfiledialogqml_unittest.moc"
++
+diff --git a/autotests/qml/filedialog_parentless.qml b/autotests/qml/filedialog_parentless.qml
+new file mode 100644
+index 0000000..c1c96fb
+--- /dev/null
++++ b/autotests/qml/filedialog_parentless.qml
+@@ -0,0 +1,27 @@
++/*  This file is part of the KDE libraries
++ *  Copyright 2015 David Rosca <nowrep@gmail.com>
++ *
++ *  This library is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU Lesser General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License or ( at
++ *  your option ) version 3 or, at the discretion of KDE e.V. ( which shall
++ *  act as a proxy as in section 14 of the GPLv3 ), any later version.
++ *
++ *  This library is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  Library General Public License for more details.
++ *
++ *  You should have received a copy of the GNU Lesser General Public License
++ *  along with this library; see the file COPYING.LIB.  If not, write to
++ *  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
++ *  Boston, MA 02110-1301, USA.
++ */
++
++import QtQuick 2.2
++import QtQuick.Dialogs 1.0
++
++FileDialog {
++    id: fileDialog
++    Component.onCompleted: visible = true
++}
+diff --git a/autotests/qml/filedialog_withparent.qml b/autotests/qml/filedialog_withparent.qml
+new file mode 100644
+index 0000000..5915ccf
+--- /dev/null
++++ b/autotests/qml/filedialog_withparent.qml
+@@ -0,0 +1,35 @@
++/*  This file is part of the KDE libraries
++ *  Copyright 2015 David Rosca <nowrep@gmail.com>
++ *
++ *  This library is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU Lesser General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License or ( at
++ *  your option ) version 3 or, at the discretion of KDE e.V. ( which shall
++ *  act as a proxy as in section 14 of the GPLv3 ), any later version.
++ *
++ *  This library is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  Library General Public License for more details.
++ *
++ *  You should have received a copy of the GNU Lesser General Public License
++ *  along with this library; see the file COPYING.LIB.  If not, write to
++ *  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
++ *  Boston, MA 02110-1301, USA.
++ */
++
++import QtQuick 2.2
++import QtQuick.Window 2.2
++import QtQuick.Dialogs 1.0
++
++Window {
++    x: 100
++    y: 100
++    width: 100
++    height: 100
++
++    FileDialog {
++        id: fileDialog
++        Component.onCompleted: visible = true
++    }
++}
+diff --git a/src/platformtheme/kdeplatformfiledialoghelper.cpp b/src/platformtheme/kdeplatformfiledialoghelper.cpp
+index 92ab107..6178af4 100644
+--- a/src/platformtheme/kdeplatformfiledialoghelper.cpp
++++ b/src/platformtheme/kdeplatformfiledialoghelper.cpp
+@@ -272,6 +272,7 @@ void KDEPlatformFileDialogHelper::initializeDialog()
+ 
+ void KDEPlatformFileDialogHelper::exec()
+ {
++    m_dialog->hide(); // ensure dialog is not shown (exec would block input)
+     m_dialog->winId(); // ensure there's a window created
+     KSharedConfig::Ptr conf = KSharedConfig::openConfig();
+     KWindowConfig::restoreWindowSize(m_dialog->windowHandle(), conf->group("FileDialogSize"));
+@@ -296,11 +297,11 @@ void KDEPlatformFileDialogHelper::saveSize()
+ 
+ bool KDEPlatformFileDialogHelper::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+ {
++    Q_UNUSED(parent)
+     initializeDialog();
+     m_dialog->setWindowFlags(windowFlags);
+     m_dialog->setWindowModality(windowModality);
+-    if (!parent || (parent && !parent->inherits("QWidgetWindow"))) // see #334963 and #344586 for details
+-        m_dialog->show();
++    m_dialog->show();
+     KSharedConfig::Ptr conf = KSharedConfig::openConfig();
+     KWindowConfig::restoreWindowSize(m_dialog->windowHandle(), conf->group("FileDialogSize"));
+     return true;

@@ -19,12 +19,12 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  qt5-qttools-devel
-BuildRequires:  libX11-devel
-BuildRequires:  xcb-util-keysyms-devel
-BuildRequires:  libXrender-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtx11extras-dev
+BuildRequires:  qt5-qttools-dev
+BuildRequires:  libX11-dev
+BuildRequires:  xcb-util-keysyms-dev
+BuildRequires:  libXrender-dev
 
 Requires:       kf5-filesystem
 
@@ -33,13 +33,13 @@ KDE Frameworks Tier 1 integration module that provides classes for managing and
 working with windows.
 
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -66,7 +66,7 @@ make %{?_smp_mflags} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5WindowSystem.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kwindowsystem_version.h
 %{_kf5_includedir}/KWindowSystem
 %{_kf5_libdir}/libKF5WindowSystem.so

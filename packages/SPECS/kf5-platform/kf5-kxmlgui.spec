@@ -17,43 +17,43 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libX11-devel
+BuildRequires:  libX11-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kitemviews-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kglobalaccel-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-ktextwidgets-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-attica-devel
+BuildRequires:  kf5-kitemviews-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kglobalaccel-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-ktextwidgets-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-attica-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 solution for user-configurable main windows.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kconfigwidgets-devel
-Requires:       kf5-kglobalaccel-devel
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kitemviews-devel
-Requires:       kf5-ktextwidgets-devel
-Requires:       kf5-kwindowsystem-devel
-Requires:       qt5-qtbase-devel
-Requires:       kf5-attica-devel
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kconfigwidgets-dev
+Requires:       kf5-kglobalaccel-dev
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kitemviews-dev
+Requires:       kf5-ktextwidgets-dev
+Requires:       kf5-kwindowsystem-dev
+Requires:       qt5-qtbase-dev
+Requires:       kf5-attica-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -83,7 +83,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libexecdir}/ksendbugmail
 %{_kf5_datadir}/kf5/kxmlgui/
 
-%files devel
+%files dev
 %{_kf5_includedir}/kxmlgui_version.h
 %{_kf5_includedir}/KXmlGui
 %{_kf5_libdir}/libKF5XmlGui.so

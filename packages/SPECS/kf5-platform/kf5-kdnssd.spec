@@ -17,26 +17,25 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  avahi-devel
+#BuildRequires:  avahi-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qttools-dev
 
-Requires:       nss-mdns
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 1 integration module for DNS-SD services (Zeroconf)
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
@@ -62,7 +61,7 @@ make %{?_smp_mflags} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5DNSSD.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/KDNSSD
 %{_kf5_libdir}/libKF5DNSSD.so
 %{_kf5_libdir}/cmake/KF5DNSSD

@@ -19,20 +19,20 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 1 addon for advanced thread management.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -58,7 +58,7 @@ make %{?_smp_mflags} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5ThreadWeaver.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/ThreadWeaver/
 %{_kf5_includedir}/threadweaver_version.h
 %{_kf5_libdir}/libKF5ThreadWeaver.so

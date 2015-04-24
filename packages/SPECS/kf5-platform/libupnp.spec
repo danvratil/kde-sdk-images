@@ -7,7 +7,7 @@ Group: System Environment/Libraries
 URL: http://www.libupnp.org/
 Source: http://downloads.sourceforge.net/pupnp/%{name}-%{version}.tar.bz2
 
-%define docdeveldir %{_docdir}/%{name}-devel-%{version}
+%define docdeveldir %{_docdir}/%{name}-dev-%{version}
 %define docdir %{_docdir}/%{name}-%{version}
 
 %description
@@ -15,13 +15,13 @@ The Universal Plug and Play (UPnP) SDK for Linux provides
 support for building UPnP-compliant control points, devices, 
 and bridges on Linux.
 
-%package devel
+%package dev
 Group: Development/Libraries
 Summary: Include files needed for development with libupnp
 Requires: libupnp = %{version}-%{release}
 
-%description devel
-The libupnp-devel package contains the files necessary for development with
+%description dev
+The libupnp-dev package contains the files necessary for development with
 the UPnP SDK libraries.
 
 %prep
@@ -48,7 +48,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_libdir}/libthreadutil.so.6*
 %{_libdir}/libupnp.so.6*
 
-%files devel
+%files dev
 %defattr(0644,root,root,0755)
 #doc _devel_docs/*
 %{_includedir}/upnp/

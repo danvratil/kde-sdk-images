@@ -19,9 +19,9 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qttools-devel
-BuildRequires:  qt5-qtx11extras-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qttools-dev
+BuildRequires:  qt5-qtx11extras-dev
 
 Requires:       kf5-filesystem
 
@@ -29,13 +29,13 @@ Requires:       kf5-filesystem
 KDBusAddons provides convenience classes on top of QtDBus, as well as an API to
 create KDED modules.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -63,7 +63,7 @@ make %{?_smp_mflags} -C %{_target_platform}
 %{_kf5_bindir}/kquitapp5
 %{_kf5_libdir}/libKF5DBusAddons.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kdbusaddons_version.h
 %{_kf5_includedir}/KDBusAddons
 %{_kf5_libdir}/libKF5DBusAddons.so

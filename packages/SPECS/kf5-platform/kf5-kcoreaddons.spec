@@ -19,8 +19,8 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qttools-dev
 
 Requires:       kf5-filesystem
 
@@ -30,13 +30,13 @@ such as manipulating mime types, autosaving files, creating backup files,
 generating random sequences, performing text manipulations such as macro
 replacement, accessing user information and many more.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -76,7 +76,7 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_kf5_libdir}/libKF5CoreAddons.so.*
 %{_kf5_datadir}/mime/packages/kde5.xml
 
-%files devel
+%files dev
 %{_kf5_includedir}/kcoreaddons_version.h
 %{_kf5_includedir}/KCoreAddons/
 %{_kf5_libdir}/libKF5CoreAddons.so

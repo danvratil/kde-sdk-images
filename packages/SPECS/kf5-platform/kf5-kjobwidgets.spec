@@ -17,31 +17,31 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libX11-devel
+BuildRequires:  libX11-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtx11extras-dev
+BuildRequires:  qt5-qttools-dev
 
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 2 addon for KJobs
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
-Requires:       kf5-kcoreaddons-devel
-Requires:       kf5-kwidgetsaddons-devel
+Requires:       qt5-qtbase-dev
+Requires:       kf5-kcoreaddons-dev
+Requires:       kf5-kwidgetsaddons-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -68,7 +68,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5JobWidgets.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kjobwidgets_version.h
 %{_kf5_includedir}/KJobWidgets
 %{_kf5_libdir}/libKF5JobWidgets.so

@@ -19,11 +19,11 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qttools-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
 
 Requires:       kf5-filesystem
 
@@ -32,14 +32,14 @@ KCompletion provides widgets with advanced completion support as well as a
 lower-level completion class which can be used with your own widgets.
 
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kwidgetsaddons-devel
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kwidgetsaddons-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -66,7 +66,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5Completion.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kcompletion_version.h
 %{_kf5_includedir}/KCompletion
 %{_kf5_libdir}/libKF5Completion.so

@@ -19,31 +19,31 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/porti
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtdeclarative-devel
-BuildRequires:  kf5-kio-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtdeclarative-dev
+BuildRequires:  kf5-kio-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-plasma-devel
-BuildRequires:  kf5-solid-devel
-BuildRequires:  kf5-threadweaver-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-plasma-dev
+BuildRequires:  kf5-solid-dev
+BuildRequires:  kf5-threadweaver-dev
 
 Requires:       kf5-filesystem
 
 %description
 KRunner provides a parallelized query system extendable via plugins.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-plasma-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-plasma-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -70,7 +70,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_qmldir}/org/kde/runnermodel
 %{_kf5_datadir}/kservicetypes5/plasma-runner.desktop
 
-%files devel
+%files dev
 %doc
 %{_kf5_includedir}/krunner_version.h
 %{_kf5_includedir}/KRunner

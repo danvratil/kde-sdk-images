@@ -17,19 +17,19 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libX11-devel
+BuildRequires:  libX11-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-kcrash-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kdoctools-devel
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-kcrash-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kdoctools-dev
 
 Requires:       kf5-filesystem
 
@@ -41,12 +41,12 @@ It launches processes by forking and then loading a dynamic library which should
 contain a 'kdemain(...)' function.
 
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -78,7 +78,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_mandir}/*/man8/kdeinit5.8.gz
 %exclude %{_kf5_mandir}/man8
 
-%files devel
+%files dev
 %{_kf5_libdir}/cmake/KF5Init
 %{_kf5_datadir}/dbus-1/interfaces/*.xml
 

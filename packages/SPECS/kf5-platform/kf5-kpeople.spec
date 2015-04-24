@@ -25,29 +25,29 @@ Patch1: kpeople-catalog.patch
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtdeclarative-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtdeclarative-dev
 
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kitemviews-devel
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kitemviews-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 library for interaction with XML RPC services.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 ## enable when ktp-kf5 stack is updated
-#Obsoletes:      libkpeople-devel < 1.0
+#Obsoletes:      libkpeople-dev < 1.0
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -89,7 +89,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_datadir}/kservicetypes5/*.desktop
 %{_kf5_qmldir}/org/kde/people
 
-%files devel
+%files dev
 %{_kf5_includedir}/KPeople
 %{_kf5_libdir}/libKF5People.so
 %{_kf5_libdir}/libKF5PeopleWidgets.so

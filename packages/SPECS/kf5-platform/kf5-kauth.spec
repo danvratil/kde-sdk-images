@@ -17,26 +17,26 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  polkit-qt5-1-devel
+BuildRequires:  polkit-qt5-1-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qttools-dev
 
-BuildRequires:  kf5-kcoreaddons-devel
+BuildRequires:  kf5-kcoreaddons-dev
 
 Requires:       kf5-filesystem
 
 %description
 KAuth is a framework to let applications perform actions as a privileged user.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kcoreaddons-devel
-%description    devel
-The %{name}-devel package contains libraries and header files for
+Requires:       kf5-kcoreaddons-dev
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -69,7 +69,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_datadir}/kf5/kauth/
 %{_kf5_libexecdir}/kauth/kauth-policy-gen
 
-%files devel
+%files dev
 %{_kf5_includedir}/kauth_version.h
 %{_kf5_includedir}/KAuth/
 %{_kf5_libdir}/libKF5Auth.so

@@ -17,26 +17,22 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  perl
-
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtscript-devel
-BuildRequires:  gettext
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtscript-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 1 addon for localization.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       gettext
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
@@ -75,7 +71,7 @@ make %{?_smp_mflags} -C %{_target_platform}
 %lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/ki18n5/general.pmap
 %lang(fi) %{_datadir}/locale/fi/LC_SCRIPTS/ki18n5/general.pmapc
 
-%files devel
+%files dev
 %{_kf5_includedir}/ki18n_version.h
 %{_kf5_includedir}/KI18n
 %{_kf5_libdir}/libKF5I18n.so

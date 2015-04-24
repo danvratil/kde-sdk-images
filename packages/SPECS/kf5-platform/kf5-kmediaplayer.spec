@@ -20,23 +20,23 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/porti
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kparts-devel
-BuildRequires:  kf5-kxmlgui-devel
+BuildRequires:  kf5-kparts-dev
+BuildRequires:  kf5-kxmlgui-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 module with plugin interfaces for media player features.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kparts-devel
+Requires:       kf5-kparts-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -63,7 +63,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libdir}/libKF5MediaPlayer.so.*
 %{_kf5_datadir}/kservicetypes5/*.desktop
 
-%files devel
+%files dev
 %{_kf5_includedir}/kmediaplayer_version.h
 %{_kf5_includedir}/KMediaPlayer
 %{_kf5_libdir}/libKF5MediaPlayer.so

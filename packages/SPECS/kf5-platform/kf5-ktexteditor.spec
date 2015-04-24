@@ -19,20 +19,20 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtscript-devel
-BuildRequires:  qt5-qtxmlpatterns-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtscript-dev
+BuildRequires:  qt5-qtxmlpatterns-dev
 
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kguiaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kparts-devel
-BuildRequires:  kf5-sonnet-devel
+BuildRequires:  kf5-karchive-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kguiaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kparts-dev
+BuildRequires:  kf5-sonnet-dev
 
 %if 0%{?fedora} >= 22
-BuildRequires:  libgit2-devel >= 0.22.0
+BuildRequires:  libgit2-dev >= 0.22.0
 %endif
 
 Requires:       kf5-filesystem
@@ -47,13 +47,13 @@ highlighting and automatic indentation to advanced scripting support, making it
 suitable for everything from a simple embedded text-file editor to an advanced
 IDE.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kparts-devel
+Requires:       kf5-kparts-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -92,7 +92,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_datadir}/katepart5/syntax/
 %{_kf5_datadir}/kxmlgui5/katepart/katepart5ui.rc
 
-%files devel
+%files dev
 %{_kf5_libdir}/libKF5TextEditor.so
 %{_kf5_libdir}/cmake/KF5TextEditor
 %{_kf5_includedir}/ktexteditor_version.h

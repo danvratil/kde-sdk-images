@@ -19,20 +19,20 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/porti
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtscript-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtscript-dev
 BuildRequires:  qt5-qttools-static
 
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kdoctools-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kparts-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kxmlgui-devel
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kdoctools-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kparts-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kxmlgui-dev
 
 Requires:       %{name}-core%{_isa} = %{version}-%{release}
 Requires:       %{name}-ui%{?_isa} = %{version}-%{release}
@@ -41,19 +41,19 @@ Requires:       %{name}-ui%{?_isa} = %{version}-%{release}
 Kross is a scripting bridge to embed scripting functionality into an
 application. It supports QtScript as a scripting interpreter backend.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-ki18n-devel
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kio-devel
-Requires:       kf5-kparts-devel
-Requires:       kf5-kwidgetsaddons-devel
-Requires:       qt5-qtbase-devel
-Requires:       qt5-qtscript-devel
+Requires:       kf5-ki18n-dev
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kio-dev
+Requires:       kf5-kparts-dev
+Requires:       kf5-kwidgetsaddons-dev
+Requires:       qt5-qtbase-dev
+Requires:       qt5-qtscript-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %package        core
@@ -114,7 +114,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_datadir}/man/man1/*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kross_version.h
 %{_kf5_includedir}/KrossUi
 %{_kf5_includedir}/KrossCore

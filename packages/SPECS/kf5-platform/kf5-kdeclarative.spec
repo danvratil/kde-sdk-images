@@ -19,35 +19,35 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtdeclarative-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtdeclarative-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-kglobalaccel-devel
-BuildRequires:  kf5-kguiaddons-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kpackage-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-kglobalaccel-dev
+BuildRequires:  kf5-kguiaddons-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kpackage-dev
 
-BuildRequires:  libepoxy-devel
+BuildRequires:  libepoxy-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 addon for Qt declarative
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kpackage-devel
-Requires:       qt5-qtdeclarative-devel
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kpackage-dev
+Requires:       qt5-qtdeclarative-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -83,7 +83,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_qmldir}/org/kde/kio
 %{_kf5_qmldir}/org/kde/kwindowsystem
 
-%files devel
+%files dev
 %{_kf5_includedir}/kdeclarative_version.h
 %{_kf5_includedir}/KDeclarative
 %{_kf5_libdir}/libKF5Declarative.so

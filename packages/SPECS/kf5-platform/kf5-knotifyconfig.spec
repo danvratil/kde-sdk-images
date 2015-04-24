@@ -19,33 +19,33 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  phonon-qt5-devel
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  kf5-kxmlgui-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-knotifications-devel
-BuildRequires:  kf5-kconfigwidgets-devel
+BuildRequires:  phonon-qt5-dev
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  kf5-kxmlgui-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-knotifications-dev
+BuildRequires:  kf5-kconfigwidgets-dev
 
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kservice-devel
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kservice-dev
 
 Requires:       kf5-filesystem
 
 %description
 %{summary}.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-ki18n-devel
-Requires:       kf5-kio-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-ki18n-dev
+Requires:       kf5-kio-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -72,7 +72,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5NotifyConfig.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/knotifyconfig_version.h
 %{_kf5_includedir}/KNotifyConfig
 %{_kf5_libdir}/libKF5NotifyConfig.so

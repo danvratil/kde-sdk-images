@@ -19,13 +19,13 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/porti
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 BuildRequires:  qt5-qttools-static
-BuildRequires:  qt5-qtsvg-devel
+BuildRequires:  qt5-qtsvg-dev
 
-BuildRequires:  kf5-kjs-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kdoctools-devel
+BuildRequires:  kf5-kjs-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kdoctools-dev
 
 Requires:       kf5-filesystem
 
@@ -33,14 +33,14 @@ Requires:       kf5-filesystem
 KSJEmbed provides a method of binding JavaScript objects to QObjects, so you
 can script your applications.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kjs-devel
-Requires:       kf5-ki18n-devel
+Requires:       kf5-kjs-dev
+Requires:       kf5-ki18n-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -70,7 +70,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libdir}/libKF5JsEmbed.so.*
 %{_kf5_datadir}/man/man1/*
 
-%files devel
+%files dev
 %{_kf5_libdir}/libKF5JsEmbed.so
 %{_kf5_libdir}/cmake/KF5JsEmbed
 %{_kf5_includedir}/KJsEmbed/

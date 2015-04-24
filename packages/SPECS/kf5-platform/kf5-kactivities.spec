@@ -1,8 +1,6 @@
 %global framework kactivities
 
-%if 0%{?fedora} > 21
 %global build_main_package 1
-%endif
 
 Name:           kf5-%{framework}
 Summary:        A KDE Frameworks 5 Tier 3 to organize user work into separate activities
@@ -21,25 +19,23 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  boost-devel
-
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtdeclarative-devel
-BuildRequires:  kf5-kxmlgui-devel
-BuildRequires:  kf5-kglobalaccel-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtdeclarative-dev
+BuildRequires:  kf5-kxmlgui-dev
+BuildRequires:  kf5-kglobalaccel-dev
 
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-kdeclarative-devel
-BuildRequires:  kf5-kcmutils-devel
-BuildRequires:  kf5-kpackage-devel
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-kdeclarative-dev
+BuildRequires:  kf5-kcmutils-dev
+BuildRequires:  kf5-kpackage-dev
 
 Requires:       kf5-kactivities-libs%{?_isa} = %{version}-%{release}
 
@@ -57,11 +53,11 @@ Requires:       kf5-filesystem
 %description    libs
 %{summary}.
 
-%package devel
+%package dev
 Summary:        Developer files for %{name}-libs
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
-%description    devel
+Requires:       qt5-qtbase-dev
+%description    dev
 %{summary}.
 
 
@@ -113,7 +109,7 @@ rm -rf %{buildroot}/%{_kf5_datadir}/kf5/kactivitymanagerd
 %{_kf5_libdir}/libKF5Activities.so.*
 %{_kf5_qmldir}/org/kde/activities/
 
-%files devel
+%files dev
 %{_kf5_libdir}/libKF5Activities.so
 %{_kf5_libdir}/cmake/KF5Activities/
 %{_kf5_includedir}/KActivities/

@@ -20,8 +20,8 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/modem
 
 BuildRequires:  extra-cmake-modules
 BuildRequires:  kf5-rpm-macros
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  ModemManager-devel >= 1.0.0
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  ModemManager-dev >= 1.0.0
 
 Requires:       kf5-filesystem
 
@@ -32,13 +32,13 @@ Provides:       kf5-libmm-qt%{?_isa} = %{version}-%{release}
 %description
 A Qt 5 library for ModemManager.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Obsoletes:      kf5-libmm-qt-devel < 5.1.95
-Provides:       kf5-libmm-qt-devel = %{version}-%{release}
-%description    devel
+Obsoletes:      kf5-libmm-qt-dev < 5.1.95
+Provides:       kf5-libmm-qt-dev = %{version}-%{release}
+%description    dev
 Qt 5 libraries and header files for developing applications
 that use ModemManager.
 
@@ -64,7 +64,7 @@ make install/fast  DESTDIR=%{buildroot} -C %{_target_platform}
 %doc README README.md COPYING.LIB
 %{_kf5_libdir}/libKF5ModemManagerQt.so.*
 
-%files devel
+%files dev
 %{_kf5_libdir}/libKF5ModemManagerQt.so
 %{_kf5_libdir}/cmake/KF5ModemManagerQt
 %{_kf5_includedir}/ModemManagerQt

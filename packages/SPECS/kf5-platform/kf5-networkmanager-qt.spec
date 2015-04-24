@@ -20,7 +20,7 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
 BuildRequires:  pkgconfig(NetworkManager) >= 0.9.8
 %if 0%{?fedora} >= 22 || 0%{?rhel} >= 7
@@ -35,18 +35,18 @@ Requires:       kf5-filesystem
 %description
 A Tier 1 KDE Frameworks 5 Qt library for NetworkManager.
 
-%package devel
+%package dev
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 %if 0%{?fedora} >= 22 || 0%{?rhel} >= 7
 Requires:       pkgconfig(libnm)
 %else
 Requires:       pkgconfig(libnm-glib) pkgconfig(libnm-util)
 %endif
 
-%description    devel
+%description    dev
 Qt libraries and header files for developing applications
 that use NetworkManager.
 
@@ -72,7 +72,7 @@ make install/fast  DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.LIB README.md
 %{_kf5_libdir}/libKF5NetworkManagerQt.so.*
 
-%files devel
+%files dev
 %{_kf5_libdir}/libKF5NetworkManagerQt.so
 %{_kf5_libdir}/cmake/KF5NetworkManagerQt
 %{_kf5_includedir}/NetworkManagerQt

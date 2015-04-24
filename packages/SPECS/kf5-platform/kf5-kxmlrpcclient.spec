@@ -19,23 +19,23 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kio-devel
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kio-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 library for interaction with XML RPC services.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kio-devel
+Requires:       kf5-kio-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -62,7 +62,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING.BSD README.md
 %{_kf5_libdir}/libKF5XmlRpcClient.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kxmlrpcclient_version.h
 %{_kf5_includedir}/KXmlRpcClient
 %{_kf5_libdir}/libKF5XmlRpcClient.so

@@ -178,6 +178,91 @@ set(qt5_PACKAGES
     qt5-qtxmlpatterns
 )
 
+set(kf5_PACKAGES
+    kf5-sdk-base
+    kf5-sdk
+    kf5-platform
+
+    dbusmenu-qt5
+    sgml-common
+    docbook-dtds
+    docbook-style-xsl
+    fdupes
+    giflib
+    ilmbase
+    libupnp
+    OpenEXR
+    xz
+
+    extra-cmake-modules
+    kf5
+
+    kf5-attica
+    kf5-frameworkintegration
+    kf5-kactivities
+    kf5-kapidox
+    kf5-karchive
+    kf5-kauth
+    kf5-kbookmarks
+    kf5-kcmutils
+    kf5-kcodecs
+    kf5-kcompletion
+    kf5-kconfig
+    kf5-kconfigwidgets
+    kf5-kcoreaddons
+    kf5-kcrash
+    kf5-kdbusaddons
+    kf5-kdeclarative
+    kf5-kded
+    kf5-kdelibs4support
+    kf5-kdesignerplugin
+    kf5-kdesu
+    kf5-kdewebkit
+    kf5-kdnssd
+    kf5-kdoctools
+    kf5-kemoticons
+    kf5-kglobalaccel
+    kf5-kguiaddons
+    kf5-khtml
+    kf5-ki18n
+    kf5-kiconthemes
+    kf5-kidletime
+    kf5-kimageformats
+    kf5-kinit
+    kf5-kio
+    kf5-kitemmodels
+    kf5-kitemviews
+    kf5-kjobwidgets
+    kf5-kjsembed
+    kf5-kjs
+    kf5-kmediaplayer
+    kf5-knewstuff
+    kf5-knotifications
+    kf5-knotifyconfig
+    kf5-kpackage
+    kf5-kparts
+    kf5-kpeople
+    kf5-kplotting
+    kf5-kpty
+    kf5-kross
+    kf5-krunner
+    kf5-kservice
+    kf5-ktexteditor
+    kf5-ktextwidgets
+    kf5-kunitconversion
+    kf5-kwallet
+    kf5-kwidgetsaddons
+    kf5-kwindowsystem
+    kf5-kxmlgui
+    kf5-kxmlrpcclient
+    #kf5-modemmanager-qt
+    #kf5-networkmanager-qt
+    kf5-plasma
+    kf5-solid
+    kf5-sonnet
+    kf5-threadweaver
+)
+
 
 ######## Custom Macros #########
 macro(createSDK name)
@@ -376,10 +461,16 @@ generatePackageTargets("qt5" "${qt5_PACKAGES}")
 createPlatform(qt5)
 createSDK(qt5)
 
+generatePackageTargets("kf5" "${kf5_PACKAGES}")
+createPlatform(kf5)
+createSDK(kf5)
+
 add_custom_target(kde-sdk-images ALL
     DEPENDS freedesktop-sdk.tar.gz
             freedesktop-sdk-rpmdb.tar.gz
             qt5-sdk.tar.gz
             qt5-sdk-rpmdb.tar.gz
+            kf5-sdk.tar.gz
+            kf5-sdk-rpmdb.tar.gz
 )
 

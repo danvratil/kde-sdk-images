@@ -15,10 +15,10 @@ Obsoletes: openexr < %{version}-%{release}
 Provides:  openexr = %{version}-%{release}
 
 # https://github.com/openexr/openexr/issues/130
-BuildConflicts: OpenEXR-devel < 2.2.0
+BuildConflicts: OpenEXR-dev < 2.2.0
 
-BuildRequires: ilmbase-devel >= %{version}
-BuildRequires: zlib-devel
+BuildRequires: ilmbase-dev >= %{version}
+BuildRequires: zlib-dev
 BuildRequires: pkgconfig
 
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
@@ -28,13 +28,13 @@ OpenEXR is a high dynamic-range (HDR) image file format developed by Industrial
 Light & Magic for use in computer imaging applications. This package contains
 libraries and sample applications for handling the format.
 
-%package devel
+%package dev
 Summary: Headers and libraries for building apps that use %{name} 
-Obsoletes: openexr-devel < %{version}-%{release}
-Provides:  openexr-devel = %{version}-%{release}
+Obsoletes: openexr-dev < %{version}-%{release}
+Provides:  openexr-dev = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
-Requires: ilmbase-devel
-%description devel
+Requires: ilmbase-dev
+%description dev
 %{summary}.
 
 %package libs
@@ -82,7 +82,7 @@ make %{?_smp_mflags} check ||:
 %{_libdir}/libIlmImf-2_2.so.22*
 %{_libdir}/libIlmImfUtil-2_2.so.22*
 
-%files devel
+%files dev
 #omit for now, they're mostly useless, and include multilib conflicts (#342781)
 #doc rpmdocs/examples 
 %{_datadir}/aclocal/openexr.m4

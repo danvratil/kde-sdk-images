@@ -19,15 +19,15 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kcrash-devel
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-kdoctools-devel
-BuildRequires:  kf5-kinit-devel
-BuildRequires:  kf5-kservice-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kcrash-dev
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-kdoctools-dev
+BuildRequires:  kf5-kinit-dev
+BuildRequires:  kf5-kservice-dev
 
 Requires:       kf5-filesystem
 
@@ -39,13 +39,13 @@ tasks are built in, others are started on demand.
 Custom KDED modules can be provided by 3rd party frameworks and
 applications.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -77,7 +77,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_mandir}/*/man8/*
 %exclude %{_kf5_mandir}/man8
 
-%files devel
+%files dev
 %{_kf5_libdir}/cmake/KDED
 %{_kf5_datadir}/dbus-1/interfaces/*.xml
 

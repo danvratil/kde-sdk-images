@@ -17,16 +17,14 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libxslt-devel
-BuildRequires:  libxml2-devel
 BuildRequires:  docbook-dtds
 BuildRequires:  docbook-style-xsl
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-karchive-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-karchive-dev
 
 BuildRequires:  perl(URI::Escape)
 
@@ -37,16 +35,16 @@ Requires:       kf5-filesystem
 %description
 Provides tools to generate documentation in various format from DocBook files.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Provides:       kf5-kdoctools-static = %{version}-%{release}
-Requires:       qt5-qtbase-devel
-Requires:       kf5-karchive-devel
+Requires:       qt5-qtbase-dev
+Requires:       kf5-karchive-dev
 Requires:       perl(URI::Escape)
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %package        doc
@@ -81,7 +79,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_datadir}/man/man8/*
 %{_kf5_datadir}/kf5/kdoctools
 
-%files devel
+%files dev
 %{_kf5_includedir}/XsltKde
 %{_kf5_libdir}/libKF5XsltKde.a
 %{_kf5_libdir}/cmake/KF5DocTools

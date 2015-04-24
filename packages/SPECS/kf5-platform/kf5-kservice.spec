@@ -19,14 +19,14 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kcrash-devel
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kdoctools-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kcrash-dev
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kdoctools-dev
 
 Requires:       kf5-filesystem
 
@@ -34,16 +34,16 @@ Requires:       kf5-filesystem
 KDE Frameworks 5 Tier 3 solution for advanced plugin and service
 introspection.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kcoreaddons-devel
-Requires:       kf5-kdbusaddons-devel
-Requires:       kf5-ki18n-devel
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kcoreaddons-dev
+Requires:       kf5-kdbusaddons-dev
+Requires:       kf5-ki18n-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -82,7 +82,7 @@ mkdir -p %{buildroot}/%{_kf5_datadir}/kservicetypes5
 %{_kf5_mandir}/*/man8/*
 %exclude %{_kf5_mandir}/man8
 
-%files devel
+%files dev
 %{_kf5_includedir}/kservice_version.h
 %{_kf5_includedir}/KService
 %{_kf5_libdir}/libKF5Service.so

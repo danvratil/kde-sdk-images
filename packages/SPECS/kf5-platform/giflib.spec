@@ -1,12 +1,17 @@
 Summary:	Library for manipulating GIF format image files
 Name:		giflib
 Version:	4.1.6
-Release:	11%{?dist}
+Release:	1%{?dist}
 License:	MIT
 Group:		System Environment/Libraries
 URL:		http://www.sourceforge.net/projects/%{name}/
 Source:		http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
-BuildRequires:	libX11-devel, libICE-devel, libSM-devel, libXt-devel
+
+BuildRequires:  libX11-dev
+BuildRequires:  libICE-dev
+BuildRequires:  libSM-dev
+BuildRequires:  libXt-dev
+
 Provides:	libungif = %{version}-%{release}
 Obsoletes:	libungif <= %{version}-%{release}
 
@@ -16,15 +21,15 @@ saving GIF format image files. It is API and ABI compatible with libungif,
 the library which supported uncompressed GIFs while the Unisys LZW patent
 was in effect.
 
-%package devel
+%package dev
 Summary:	Development tools for programs using the giflib library
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Provides:	libungif-devel = %{version}-%{release}
-Obsoletes:	libungif-devel <= %{version}-%{release}
+Provides:	libungif-dev = %{version}-%{release}
+Obsoletes:	libungif-dev <= %{version}-%{release}
 
-%description devel
-The giflib-devel package includes header files, libraries necessary for
+%description dev
+The giflib-dev package includes header files, libraries necessary for
 developing programs which use the giflib library to load and save GIF format
 image files. It contains the documentation of the giflib library, too.
 
@@ -69,11 +74,11 @@ rm -f doc/Makefile*
 
 %postun -p /sbin/ldconfig
 
-%files 
+%files
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_libdir}/lib*.so.*
 
-%files devel
+%files dev
 %doc doc/* util/giffiltr.c util/gifspnge.c
 %{_libdir}/lib*.so
 %{_includedir}/*.h

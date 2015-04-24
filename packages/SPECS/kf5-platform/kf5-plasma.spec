@@ -17,59 +17,58 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-framework-%{version}.tar.xz
 
-BuildRequires:  libX11-devel
-BuildRequires:  libxcb-devel
-BuildRequires:  libXrender-devel
-BuildRequires:  libXScrnSaver-devel
-BuildRequires:  libXext-devel
-BuildRequires:  libSM-devel
-BuildRequires:  openssl-devel
-BuildRequires:  libGL-devel
+BuildRequires:  libX11-dev
+BuildRequires:  libxcb-dev
+BuildRequires:  libXrender-dev
+BuildRequires:  libXScrnSaver-dev
+BuildRequires:  libXext-dev
+BuildRequires:  libSM-dev
+BuildRequires:  libGL-dev
 
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  qt5-qtdeclarative-devel
-BuildRequires:  qt5-qtsvg-devel
-BuildRequires:  qt5-qtscript-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtx11extras-dev
+BuildRequires:  qt5-qtdeclarative-dev
+BuildRequires:  qt5-qtsvg-dev
+BuildRequires:  qt5-qtscript-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  kf5-kactivities-devel
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-kdeclarative-devel
-BuildRequires:  kf5-kglobalaccel-devel
-BuildRequires:  kf5-kguiaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-kxmlgui-devel
-BuildRequires:  kf5-kdoctools-devel
-BuildRequires:  kf5-kpackage-devel
-BuildRequires:  kf5-kdesu-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-knotifications-devel
-BuildRequires:  kf5-solid-devel
-BuildRequires:  kf5-kparts-devel
-BuildRequires:  kf5-kconfig-devel
+BuildRequires:  kf5-kactivities-dev
+BuildRequires:  kf5-karchive-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-kdeclarative-dev
+BuildRequires:  kf5-kglobalaccel-dev
+BuildRequires:  kf5-kguiaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-kxmlgui-dev
+BuildRequires:  kf5-kdoctools-dev
+BuildRequires:  kf5-kpackage-dev
+BuildRequires:  kf5-kdesu-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-knotifications-dev
+BuildRequires:  kf5-solid-dev
+BuildRequires:  kf5-kparts-dev
+BuildRequires:  kf5-kconfig-dev
 
 Requires:       kf5-filesystem
 
 %description
 %{summary}.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       extra-cmake-modules
-Requires:       kf5-kpackage-devel
+Requires:       kf5-kpackage-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -110,7 +109,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 
 %lang(lt) %{_datadir}/locale/lt/LC_SCRIPTS/libplasma5/*.js
 
-%files devel
+%files dev
 %{_kf5_libdir}/cmake/KF5Plasma
 %{_kf5_libdir}/cmake/KF5PlasmaQuick
 %{_kf5_libdir}/libKF5Plasma.so

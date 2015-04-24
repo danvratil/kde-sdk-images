@@ -19,37 +19,37 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-sonnet-devel
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-sonnet-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 Tier 3 addon with advanced text editing widgets.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kcompletion-devel
-Requires:       kf5-kconfigwidgets-devel
-Requires:       kf5-ki18n-devel
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kservice-devel
-Requires:       kf5-kwindowsystem-devel
-Requires:       kf5-sonnet-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-kcompletion-dev
+Requires:       kf5-kconfigwidgets-dev
+Requires:       kf5-ki18n-dev
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kservice-dev
+Requires:       kf5-kwindowsystem-dev
+Requires:       kf5-sonnet-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -77,7 +77,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libdir}/libKF5TextWidgets.so.*
 %{_kf5_datadir}/kservicetypes5/*.desktop
 
-%files devel
+%files dev
 %{_kf5_includedir}/ktextwidgets_version.h
 %{_kf5_includedir}/KTextWidgets
 %{_kf5_libdir}/libKF5TextWidgets.so

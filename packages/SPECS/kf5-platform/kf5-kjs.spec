@@ -17,14 +17,11 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/portingAids/%{framework}-%{version}.tar.xz
 
-BuildRequires:  perl
-BuildRequires:  pcre-devel
-
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kdoctools-devel
+BuildRequires:  kf5-kdoctools-dev
 
 Requires:       kf5-filesystem
 
@@ -32,13 +29,13 @@ Requires:       kf5-filesystem
 KDE Frameworks 1 Tier 1 functional module with JavaScript interpret.
 
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -70,7 +67,7 @@ chmod +x %{buildroot}/%{_kf5_datadir}/kf5/kjs/create_hash_table
 %{_kf5_datadir}/kf5/kjs/create_hash_table
 %{_mandir}/man1/kjs5.1.gz
 
-%files devel
+%files dev
 %{_kf5_includedir}/kjs_version.h
 %{_kf5_includedir}/kjs
 %{_kf5_includedir}/wtf

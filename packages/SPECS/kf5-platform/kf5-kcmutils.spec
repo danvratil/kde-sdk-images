@@ -19,18 +19,18 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtdeclarative-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtdeclarative-dev
 
-BuildRequires:  kf5-kitemviews-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kxmlgui-devel
-BuildRequires:  kf5-kdeclarative-devel
-BuildRequires:  kf5-kpackage-devel
+BuildRequires:  kf5-kitemviews-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kxmlgui-dev
+BuildRequires:  kf5-kdeclarative-dev
+BuildRequires:  kf5-kpackage-dev
 
 Requires:       kf5-filesystem
 
@@ -38,17 +38,17 @@ Requires:       kf5-filesystem
 KCMUtils provides various classes to work with KCModules. KCModules can be
 created with the KConfigWidgets framework.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfigwidgets-devel
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kitemviews-devel
-Requires:       kf5-kservice-devel
-Requires:       kf5-kxmlgui-devel
+Requires:       kf5-kconfigwidgets-dev
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kitemviews-dev
+Requires:       kf5-kservice-dev
+Requires:       kf5-kxmlgui-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -76,7 +76,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libdir}/libKF5KCMUtils.so.*
 %{_kf5_datadir}/kservicetypes5/*.desktop
 
-%files devel
+%files dev
 %{_kf5_includedir}/kcmutils_version.h
 %{_kf5_includedir}/KCMUtils
 %{_kf5_libdir}/libKF5KCMUtils.so

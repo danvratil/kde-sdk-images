@@ -19,13 +19,13 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kdoctools-devel
+BuildRequires:  kf5-karchive-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kdoctools-dev
 
 Requires:       kf5-filesystem
 
@@ -34,12 +34,12 @@ KDE Frameworks 5 Tier 2 library to load and install non-binary packages as
 if they were plugins.
 
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
@@ -67,7 +67,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_datadir}/kservicetypes5/kpackage-packagestructure.desktop
 %{_mandir}/man1/kpackagetool5.1.gz
 
-%files devel
+%files dev
 %{_kf5_includedir}/kpackage_version.h
 %{_kf5_includedir}/KPackage
 %{_kf5_libdir}/libKF5Package.so

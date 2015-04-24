@@ -19,24 +19,24 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-ki18n-devel
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-ki18n-dev
 
 Requires:       kf5-filesystem
 
 %description
 KDE Frameworks 5 tier 2 module providing Pty abstraction.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kcoreaddons-devel
-Requires:       kf5-ki18n-devel
+Requires:       kf5-kcoreaddons-dev
+Requires:       kf5-ki18n-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -63,7 +63,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %doc COPYING COPYING.LIB README.md
 %{_kf5_libdir}/libKF5Pty.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kpty_version.h
 %{_kf5_includedir}/KPty
 %{_kf5_libdir}/libKF5Pty.so

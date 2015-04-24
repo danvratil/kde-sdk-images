@@ -19,13 +19,13 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtsvg-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtsvg-dev
 
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kitemviews-devel
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kitemviews-dev
 
 Requires:       kf5-filesystem
 
@@ -33,17 +33,17 @@ Requires:       kf5-filesystem
 KDE Frameworks 5 Tier 3 integration module with icon themes
 
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-ki18n-devel
-Requires:       kf5-kconfigwidgets-devel
-Requires:       kf5-kwidgetsaddons-devel
-Requires:       kf5-kitemviews-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-ki18n-dev
+Requires:       kf5-kconfigwidgets-dev
+Requires:       kf5-kwidgetsaddons-dev
+Requires:       kf5-kitemviews-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -71,7 +71,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_bindir}/kiconfinder5
 %{_kf5_libdir}/libKF5IconThemes.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kiconthemes_version.h
 %{_kf5_includedir}/KIconThemes
 %{_kf5_libdir}/libKF5IconThemes.so

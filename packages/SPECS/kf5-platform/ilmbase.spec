@@ -9,10 +9,11 @@ URL:	 http://www.openexr.com/
 Source0: http://download.savannah.nongnu.org/releases/openexr/ilmbase-%{version}.tar.gz
 
 #BuildRequires: automake libtool
-BuildRequires: pkgconfig
 # silly rpm, won't pick up rpm dependencies for items not in it's buildroot
 # see http://bugzilla.redhat.com/866302
-BuildRequires: pkgconfig(gl) pkgconfig(glu)
+
+BuildRequires: mesa-libGL-dev
+#BuildRequires: mesa-libGLU-dev
 
 ## upstreamable patches
 # explicitly add $(PTHREAD_LIBS) to libIlmThread linkage (helps PTHREAD_LIBS workaround in %%build)
@@ -33,10 +34,10 @@ and other useful 2D and 3D math functions.
 
 Iex is an exception-handling library.
 
-%package devel
-Summary: Headers and libraries for building apps that use %{name} 
+%package dev
+Summary: Headers and libraries for building apps that use %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-%description devel
+%description dev
 %{summary}.
 
 
@@ -86,7 +87,7 @@ make %{?_smp_mflags} check
 %{_libdir}/libIlmThread-2_2.so.12*
 %{_libdir}/libImath-2_2.so.12*
 
-%files devel
+%files dev
 %{_includedir}/OpenEXR/
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/IlmBase.pc

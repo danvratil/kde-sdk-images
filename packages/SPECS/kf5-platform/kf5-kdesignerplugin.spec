@@ -19,30 +19,30 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtwebkit-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtwebkit-dev
 BuildRequires:  qt5-qttools-static
-BuildRequires:  qt5-qttools-devel
-BuildRequires:  qt5-qtdeclarative-devel
-BuildRequires:  qt5-qtwebkit-devel
+BuildRequires:  qt5-qttools-dev
+BuildRequires:  qt5-qtdeclarative-dev
+BuildRequires:  qt5-qtwebkit-dev
 BuildRequires:  qt5-designer-plugin-webkit
 
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kdoctools-devel
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kdoctools-dev
 
 # optional requirements
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-kitemviews-devel
-BuildRequires:  kf5-kplotting-devel
-BuildRequires:  kf5-ktextwidgets-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kxmlgui-devel
-BuildRequires:  kf5-sonnet-devel
-BuildRequires:  kf5-kdewebkit-devel
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-kitemviews-dev
+BuildRequires:  kf5-kplotting-dev
+BuildRequires:  kf5-ktextwidgets-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kxmlgui-dev
+BuildRequires:  kf5-sonnet-dev
+BuildRequires:  kf5-kdewebkit-dev
 
 Requires:       kf5-filesystem
 
@@ -52,12 +52,12 @@ the widgets provided by various KDE frameworks, as well as a utility
 (kgendesignerplugin) that can be used to generate other such plugins
 from ini-style description files.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -89,7 +89,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_mandir}/*/man1/*kgendesignerplugin.1.gz
 %exclude %{_kf5_mandir}/man1
 
-%files devel
+%files dev
 %{_kf5_libdir}/cmake/KF5DesignerPlugin
 
 

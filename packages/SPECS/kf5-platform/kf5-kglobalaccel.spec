@@ -17,23 +17,23 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libX11-devel
+BuildRequires:  libX11-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtx11extras-dev
+BuildRequires:  qt5-qttools-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kcrash-devel
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kwindowsystem-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kcrash-dev
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kwindowsystem-dev
 
-BuildRequires:  libxcb-devel
-BuildRequires:  xcb-util-keysyms-devel
+BuildRequires:  libxcb-dev
+BuildRequires:  xcb-util-keysyms-dev
 
 Requires:       kf5-filesystem
 
@@ -51,14 +51,14 @@ Conflicts:      kf5-kglobalaccel < 5.7.0
 %description    libs
 %{summary}.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -92,7 +92,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %files libs -f kglobalaccel5_qt.lang
 %{_kf5_libdir}/libKF5GlobalAccel.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/kglobalaccel_version.h
 %{_kf5_includedir}/KGlobalAccel/
 %{_kf5_libdir}/libKF5GlobalAccel.so

@@ -17,20 +17,19 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libgcrypt-devel
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-knotifications-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-knotifications-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
 
 Obsoletes:      kf5-kwallet-runtime < 5.8.0-2
 Provides:       kf5-kwallet-runtime = %{version}-%{release}
@@ -48,15 +47,15 @@ Requires:       %{name} = %{version}-%{release}
 %description    libs
 Provides API to access KWallet data from applications.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kwindowsystem-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kwindowsystem-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -93,7 +92,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_libdir}/libKF5Wallet.so.*
 %{_kf5_libdir}/libkwalletbackend5.so.*
 
-%files devel
+%files dev
 %{_kf5_datadir}/dbus-1/interfaces/kf5_org.kde.KWallet.xml
 %{_kf5_includedir}/kwallet_version.h
 %{_kf5_includedir}/KWallet

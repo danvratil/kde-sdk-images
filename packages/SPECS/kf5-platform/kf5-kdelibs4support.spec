@@ -16,42 +16,39 @@ URL:            https://projects.kde.org/projects/frameworks/kdelibs4support
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/portingAids/%{framework}-%{version}.tar.xz
 
-BuildRequires:  ca-certificates
-BuildRequires:  libX11-devel
-BuildRequires:  libSM-devel
-BuildRequires:  openssl-devel
-BuildRequires:  gettext-devel
+BuildRequires:  libX11-dev
+BuildRequires:  libSM-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtsvg-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  qt5-qttools-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtsvg-dev
+BuildRequires:  qt5-qtx11extras-dev
+BuildRequires:  qt5-qttools-dev
 
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kcrash-devel
-BuildRequires:  kf5-kdesignerplugin-devel
-BuildRequires:  kf5-kglobalaccel-devel
-BuildRequires:  kf5-kdoctools-devel
-BuildRequires:  kf5-kguiaddons-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kio-devel
-BuildRequires:  kf5-knotifications-devel
-BuildRequires:  kf5-kparts-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-ktextwidgets-devel
-BuildRequires:  kf5-kunitconversion-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kwindowsystem-devel
-BuildRequires:  kf5-kxmlgui-devel
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kcrash-dev
+BuildRequires:  kf5-kdesignerplugin-dev
+BuildRequires:  kf5-kglobalaccel-dev
+BuildRequires:  kf5-kdoctools-dev
+BuildRequires:  kf5-kguiaddons-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kio-dev
+BuildRequires:  kf5-knotifications-dev
+BuildRequires:  kf5-kparts-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-ktextwidgets-dev
+BuildRequires:  kf5-kunitconversion-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kwindowsystem-dev
+BuildRequires:  kf5-kxmlgui-dev
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
-Requires:       ca-certificates
-Requires:       kde-settings
+#Requires:       ca-certificates
+#Requires:       kde-settings
 Requires:       kf5-filesystem
 
 %description
@@ -75,29 +72,29 @@ BuildArch:      noarch
 %description    doc
 %{summary}.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kauth-devel
-Requires:       kf5-kconfigwidgets-devel
-Requires:       kf5-kcoreaddons-devel
-Requires:       kf5-kcrash-devel
-Requires:       kf5-kdesignerplugin-devel
-Requires:       kf5-kdoctools-devel
-Requires:       kf5-kemoticons-devel
-Requires:       kf5-kguiaddons-devel
-Requires:       kf5-kiconthemes-devel
-Requires:       kf5-kinit-devel
-Requires:       kf5-kitemmodels-devel
-Requires:       kf5-knotifications-devel
-Requires:       kf5-kparts-devel
-Requires:       kf5-ktextwidgets-devel
-Requires:       kf5-kunitconversion-devel
-Requires:       kf5-kwindowsystem-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-kauth-dev
+Requires:       kf5-kconfigwidgets-dev
+Requires:       kf5-kcoreaddons-dev
+Requires:       kf5-kcrash-dev
+Requires:       kf5-kdesignerplugin-dev
+Requires:       kf5-kdoctools-dev
+Requires:       kf5-kemoticons-dev
+Requires:       kf5-kguiaddons-dev
+Requires:       kf5-kiconthemes-dev
+Requires:       kf5-kinit-dev
+Requires:       kf5-kitemmodels-dev
+Requires:       kf5-knotifications-dev
+Requires:       kf5-kparts-dev
+Requires:       kf5-ktextwidgets-dev
+Requires:       kf5-kunitconversion-dev
+Requires:       kf5-kwindowsystem-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -170,7 +167,7 @@ rm -fv %{buildroot}%{_kf5_sysconfdir}/xdg/kdebugrc
 %{_kf5_mandir}/*/man1/*
 %exclude %{_kf5_mandir}/man1
 
-%files devel
+%files dev
 %{_kf5_libdir}/libKF5KDELibs4Support.so
 %{_kf5_libdir}/cmake/KF5KDELibs4Support/
 %{_kf5_libdir}/cmake/KF5KDE4Support/

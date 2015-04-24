@@ -17,36 +17,32 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  libxml2-devel
-BuildRequires:  libxslt-devel
-BuildRequires:  zlib-devel
-
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  kf5-knotifications-devel
-BuildRequires:  kf5-kwallet-devel
-BuildRequires:  qt5-qtscript-devel
-BuildRequires:  kf5-kxmlgui-devel
-BuildRequires:  kf5-ktextwidgets-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  qt5-qtx11extras-dev
+BuildRequires:  kf5-knotifications-dev
+BuildRequires:  kf5-kwallet-dev
+BuildRequires:  qt5-qtscript-dev
+BuildRequires:  kf5-kxmlgui-dev
+BuildRequires:  kf5-ktextwidgets-dev
 
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  kf5-kbookmarks-devel
-BuildRequires:  kf5-kcompletion-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kconfigwidgets-devel
-BuildRequires:  kf5-kcoreaddons-devel
-BuildRequires:  kf5-kdbusaddons-devel
-BuildRequires:  kf5-kdoctools-devel
-BuildRequires:  kf5-ki18n-devel
-BuildRequires:  kf5-kiconthemes-devel
-BuildRequires:  kf5-kitemviews-devel
-BuildRequires:  kf5-kjobwidgets-devel
-BuildRequires:  kf5-kservice-devel
-BuildRequires:  kf5-solid-devel
-BuildRequires:  kf5-kwidgetsaddons-devel
-BuildRequires:  kf5-kwindowsystem-devel
+BuildRequires:  kf5-karchive-dev
+BuildRequires:  kf5-kbookmarks-dev
+BuildRequires:  kf5-kcompletion-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kconfigwidgets-dev
+BuildRequires:  kf5-kcoreaddons-dev
+BuildRequires:  kf5-kdbusaddons-dev
+BuildRequires:  kf5-kdoctools-dev
+BuildRequires:  kf5-ki18n-dev
+BuildRequires:  kf5-kiconthemes-dev
+BuildRequires:  kf5-kitemviews-dev
+BuildRequires:  kf5-kjobwidgets-dev
+BuildRequires:  kf5-kservice-dev
+BuildRequires:  kf5-solid-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
+BuildRequires:  kf5-kwindowsystem-dev
 
 Requires:       kf5-filesystem
 
@@ -60,22 +56,22 @@ Requires:       %{name}-ntlm%{?_isa} = %{version}-%{release}
 %description
 KDE Frameworks 5 Tier 3 solution for filesystem abstraction
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-kbookmarks-devel
-Requires:       kf5-kcompletion-devel
-Requires:       kf5-kconfig-devel
-Requires:       kf5-kcoreaddons-devel
-Requires:       kf5-kitemviews-devel
-Requires:       kf5-kjobwidgets-devel
-Requires:       kf5-kservice-devel
-Requires:       kf5-solid-devel
-Requires:       kf5-kxmlgui-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-kbookmarks-dev
+Requires:       kf5-kcompletion-dev
+Requires:       kf5-kconfig-dev
+Requires:       kf5-kcoreaddons-dev
+Requires:       kf5-kitemviews-dev
+Requires:       kf5-kjobwidgets-dev
+Requires:       kf5-kservice-dev
+Requires:       kf5-solid-dev
+Requires:       kf5-kxmlgui-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %package        doc
@@ -235,7 +231,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %files ntlm
 %{_kf5_libdir}/libKF5KIONTLM.so.*
 
-%files devel
+%files dev
 %{_kf5_includedir}/*
 %{_kf5_libdir}/*.so
 %{_kf5_libdir}/cmake/KF5KIO

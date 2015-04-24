@@ -19,12 +19,12 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  kf5-kcoreaddons-devel
+BuildRequires:  qt5-qtbase-dev
+BuildRequires:  kf5-kcoreaddons-dev
 
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  kf5-kconfig-devel
-BuildRequires:  kf5-kservice-devel
+BuildRequires:  kf5-karchive-dev
+BuildRequires:  kf5-kconfig-dev
+BuildRequires:  kf5-kservice-dev
 
 Requires:       kf5-filesystem
 
@@ -32,15 +32,15 @@ Requires:       kf5-filesystem
 KDE Frameworks 5 Tier 3 module that provides emoticons themes as well as
 helper classes to automatically convert text emoticons to graphical emoticons.
 
-%package        devel
+%package        dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       kf5-karchive-devel
-Requires:       kf5-kservice-devel
-Requires:       qt5-qtbase-devel
+Requires:       kf5-karchive-dev
+Requires:       kf5-kservice-dev
+Requires:       qt5-qtbase-dev
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description    dev
+The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 
@@ -71,7 +71,7 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_datadir}/kservicetypes5/*
 %{_kf5_datadir}/emoticons/Glass
 
-%files devel
+%files dev
 %{_kf5_includedir}/kemoticons_version.h
 %{_kf5_includedir}/KEmoticons
 %{_kf5_libdir}/libKF5Emoticons.so
