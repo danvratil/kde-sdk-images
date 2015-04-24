@@ -11,8 +11,8 @@ Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/subm
 
 BuildArch: noarch
 
-BuildRequires: freedesktop-base-sdk
-BuildRequires: qt5-qttools-dev >= %{version}
+BuildRequires: freedesktop-sdk-base
+BuildRequires: qt5-qttools-dev
 
 %description
 %{summary}.

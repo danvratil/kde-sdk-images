@@ -6,7 +6,7 @@ Summary:        Qt5 - module with set of QtQuick controls
 Release:        1%{?dist}
 License:        BSD and (LGPLv2 with exceptions or GPLv3 with exceptions) and GFDL
 Url:            http://qt-project.org/
-Source0: http://download.qt-project.org/official_releases/qt/5.2/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
+Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
 
 BuildRequires:  freedesktop-sdk-base
 BuildRequires:  qt5-qtbase-dev
@@ -48,9 +48,11 @@ make install_docs INSTALL_ROOT=%{buildroot}
 # better to own this elsewhere? qt5-qtbase? -- rex
 %dir %{_qt5_archdatadir}/qml
 %{_qt5_archdatadir}/qml/QtQuick/
+%{_qt5_prefix}/examples/quick/dialogs/systemdialogs
 %doc LICENSE.FDL
-%doc LICENSE.LGPL
-%doc LICENSE.GPL
+%doc LICENSE.GPLv2
+%doc LICENSE.LGPLv21
+%doc LICENSE.LGPLv3
 %doc LGPL_EXCEPTION.txt
 %doc header.BSD
 
@@ -59,6 +61,8 @@ make install_docs INSTALL_ROOT=%{buildroot}
 %{_qt5_docdir}/qtquickcontrols/
 %{_qt5_docdir}/qtquicklayouts.qch
 %{_qt5_docdir}/qtquicklayouts/
+%{_qt5_docdir}/qtquickdialogs.qch
+%{_qt5_docdir}/qtquickdialogs/
 
 
 %changelog

@@ -18,6 +18,10 @@ Patch1: mesa-demos-as-needed.patch
 
 BuildRequires: qt5-sdk-base
 
+BuildRequires: mesa-libGL-dev
+BuildRequires: mesa-libGLU-dev
+BuildRequires: glew-dev
+
 %description
 This package provides some demo applications for testing Mesa.
 

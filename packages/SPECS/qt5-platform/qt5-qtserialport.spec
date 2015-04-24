@@ -39,11 +39,14 @@ BuildArch: noarch
 %description doc
 %{summary}.
 
+# no examples yet
+%if 0
 %package examples
 Summary: Programming examples for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 %description examples
 %{summary}.
+%endif
 
 
 %prep

@@ -116,6 +116,11 @@ set(qt5_PACKAGES
     xcb-util-wm
     #NetworkManager
 
+    # glx detection
+    mesa-libGLU
+    glew
+    mesa-demos
+
     # qttools
     clucene
 
@@ -136,6 +141,9 @@ set(qt5_PACKAGES
     openal-soft
     #xv
     #gstreamer1-plugins-bad-free
+
+    phonon
+    phonon-backend-gstreamer
 
     # Bootstrap qttools
     qt5-qtbase-bootstrap
@@ -164,7 +172,7 @@ set(qt5_PACKAGES
     qt5-qtserialport
     qt5-qtsvg
     qt5-qttranslations
-    #qt5-qtwayland
+    #qt5-qtwayland # too old xkbcommon
     qt5-qtwebkit
     qt5-qtx11extras
     qt5-qtxmlpatterns
