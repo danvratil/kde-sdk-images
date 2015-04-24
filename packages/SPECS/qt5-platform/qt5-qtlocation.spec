@@ -1,51 +1,44 @@
-
 %global qt_module qtlocation
-# define to build docs, need to undef this for bootstrapping
-%define docs 1
 
 Summary: Qt5 - Location component
-Name:    qt5-%{qt_module}
+Name:    qt5-%{qt_module}%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-## upstreamable patches
-# try to support older glib2 (like el6)
-Patch50: qtlocation-opensource-src-5.4.0-G_VALUE_INIT.patch
+BuildRequires: freedesktop-sdk-base
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: pkgconfig(Qt5Qml) >= 5.4.0
-BuildRequires: pkgconfig(geoclue)
-BuildRequires: pkgconfig(gypsy)
+BuildRequires: qt5-qtbase%{?bootstrap:-bootstrap}-dev
+BuildRequires: qt5-qtdeclarative%{?bootstrap:-bootstrap}-dev
 
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
+# TODO
+#BuildRequires: pkgconfig(geoclue)
+#BuildRequires: pkgconfig(gypsy)
+
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
 
 %description
 The Qt Location and Qt Positioning APIs gives developers the ability to
 determine a position by using a variety of possible sources, including
 satellite, or wifi, or text file, and so on.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase%{?bootstrap:-bootstrap}-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -61,9 +54,6 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 %prep
 %setup -q -n %{qt_module}-opensource-src-%{version}%{?pre:-%{pre}}
 
-## G_VALUE_INIT is new in glib-2.30+ only
-%patch50 -p1 -b .G_VALUE_INIT
-
 
 %build
 mkdir %{_target_platform}
@@ -72,7 +62,7 @@ pushd %{_target_platform}
 
 make %{?_smp_mflags}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make %{?_smp_mflags} docs
 %endif
 popd
@@ -81,7 +71,7 @@ popd
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %endif
 
@@ -115,7 +105,7 @@ popd
 %{_qt5_libdir}/cmake/Qt5Location/Qt5Location_QGeoServiceProviderFactory*.cmake
 %{_qt5_libdir}/cmake/Qt5Positioning/Qt5Positioning_QGeoPositionInfoSourceFactory*.cmake
 
-%files devel
+%files dev
 %{_qt5_headerdir}/QtLocation/
 %{_qt5_libdir}/libQt5Location.so
 %{_qt5_libdir}/libQt5Location.prl
@@ -129,7 +119,7 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5Positioning.pc
 %{_qt5_archdatadir}/mkspecs/modules/qt_lib_positioning*.pri
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %files doc
 %doc LICENSE.FDL
 %{_qt5_docdir}/qtlocation.qch

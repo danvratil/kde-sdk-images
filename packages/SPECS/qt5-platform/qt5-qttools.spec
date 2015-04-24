@@ -1,31 +1,16 @@
-
-#global bootstrap 1
 %global qt_module qttools
 
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-# only primary archs (for now), allow secondary to bootstrap
-%if ! 0%{?bootstrap}
-%ifarch %{arm} %{ix86} x86_64
-%define docs 1
-%endif
-%endif
-
 Summary: Qt5 - QtTool components
-Name:    qt5-qttools
+Name:    qt5-qttools%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-Patch1: qttools-opensource-src-5.3.2-system-clucene.patch
+#Patch1: qttools-opensource-src-5.3.2-system-clucene.patch
 
 ## upstream patches
 
@@ -34,21 +19,25 @@ Source21: designer.desktop
 Source22: linguist.desktop
 Source23: qdbusviewer.desktop
 
-# %%check needs cmake (and don't want to mess with cmake28)
-BuildRequires: cmake
-BuildRequires: desktop-file-utils
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: qt5-qtbase-static
-BuildRequires: qt5-qtdeclarative-static
-BuildRequires: qt5-qtwebkit-devel
+BuildRequires:  freedesktop-sdk-base
 
-BuildRequires: clucene09-core-devel >= 0.9.21b-12
+BuildRequires:  desktop-file-utils
+
+# Build even the non-bootstrapped version against bootstrapped packages
+# that means we will be able to build qt5-qtbase against non-bootstrapped
+# qt5-qttools
+BuildRequires:  qt5-qtbase-bootstrap-dev
+BuildRequires:  qt5-qtdeclarative-bootstrap-dev
+BuildRequires:  qt5-qtdeclarative-bootstrap-static
+BuildRequires:  qt5-qtwebkit-bootstrap-dev
+%if ! 0%{?bootstrap}
+BuildRequires:  qt5-qttools-bootstrap-dev
+%endif
+
+BuildRequires:  clucene-core-dev
 
 Requires: %{name}-common = %{version}-%{release}
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
-
-# when -libs were split out, for multilib upgrade path
-Obsoletes: qt5-tools < 5.4.0-0.2
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
 
 %description
 %{summary}.
@@ -59,82 +48,74 @@ BuildArch: noarch
 %description common
 %{summary}.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs-clucene%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs-designer%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs-designercomponents%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs-help%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-Provides: qt5-designer = %{version}-%{release}
-Provides: qt5-linguist = %{version}-%{release}
-%description devel
+Requires: qt5-qtbase%{?bootstrap:-bootstrap}-dev%{?_isa}
+Provides: qt5%{?bootstrap:-bootstrap}-designer = %{version}-%{release}
+Provides: qt5%{?bootstrap:-bootstrap}-linguist = %{version}-%{release}
+%description dev
 %{summary}.
 
 %package static
 Summary: Static library files for %{name}
-Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+Requires: %{name}-dev%{?_isa} = %{version}-%{release}
 %description static
 %{summary}.
 
 %package libs-clucene
 Summary: Qt5 CLucene runtime library
 Requires: %{name}-common = %{version}-%{release}
-# when split happened
-Conflicts: qt5-tools < 5.4.0-0.2
 %description libs-clucene
 %{summary}.
 
 %package libs-designer
 Summary: Qt5 Designer runtime library
 Requires: %{name}-common = %{version}-%{release}
-# when split happened
-Conflicts: qt5-tools < 5.4.0-0.2
 %description libs-designer
 %{summary}.
 
 %package libs-designercomponents
 Summary: Qt5 Designer Components runtime library
 Requires: %{name}-common = %{version}-%{release}
-# when split happened
-Conflicts: qt5-tools < 5.4.0-0.2
 %description libs-designercomponents
 %{summary}.
 
 %package libs-help
 Summary: Qt5 Help runtime library
 Requires: %{name}-common = %{version}-%{release}
-# when split happened
-Conflicts: qt5-tools < 5.4.0-0.2
 %description libs-help
 %{summary}.
 
-%package -n qt5-assistant
+%package -n qt5%{?bootstrap:-bootstrap}-assistant
 Summary: Documentation browser for Qt5
 Requires: %{name}-common = %{version}-%{release}
-%description -n qt5-assistant
+%description -n qt5%{?bootstrap:-bootstrap}-assistant
 %{summary}.
 
-%package -n qt5-designer-plugin-webkit
+%package -n qt5%{?bootstrap:-bootstrap}-designer-plugin-webkit
 Summary: Qt5 designer plugin for WebKit
 Requires: %{name}-libs-designer%{?_isa} = %{version}-%{release}
-%description -n qt5-designer-plugin-webkit
+%description -n qt5%{?bootstrap:-bootstrap}-designer-plugin-webkit
 %{summary}.
 
-%package -n qt5-qdbusviewer
+%package -n qt5%{?bootstrap:-bootstrap}-qdbusviewer
 Summary: D-Bus debugger and viewer
 Requires: %{name}-common = %{version}-%{release}
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
-%description -n qt5-qdbusviewer
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
+%description -n qt5%{?bootstrap:-bootstrap}-qdbusviewer
 QDbusviewer can be used to inspect D-Bus objects of running programs
 and invoke methods on those objects.
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-bootstrap-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -150,12 +131,10 @@ Requires: %{name}-common = %{version}-%{release}
 %prep
 %setup -q -n qttools-opensource-src-%{version}%{?pre:-%{pre}}
 
-%if 0%{?system_clucene}
-%patch1 -p1 -b .system_clucene
+#%patch1 -p1 -b .system_clucene
 # bundled libs
-rm -rf src/assistant/3rdparty/clucene
-%endif
-%patch2 -p1 -b .qmake-qt5
+#rm -rf src/assistant/3rdparty/clucene
+#%patch2 -p1 -b .qmake-qt5
 
 
 %build
@@ -165,7 +144,7 @@ pushd %{_target_platform}
 
 make %{?_smp_mflags}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make %{?_smp_mflags} docs
 %endif
 popd
@@ -174,7 +153,7 @@ popd
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %endif
 
@@ -257,60 +236,60 @@ popd
 %files  libs-help
 %{_qt5_libdir}/libQt5Help.so.5*
 
-%post -n qt5-assistant
+%post -n qt5%{?bootstrap:-bootstrap}-assistant
 touch --no-create %{_datadir}/icons/hicolor ||:
 
-%posttrans -n qt5-assistant
+%posttrans -n qt5%{?bootstrap:-bootstrap}-assistant
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
-%postun -n qt5-assistant
+%postun -n qt5%{?bootstrap:-bootstrap}-assistant
 if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%files -n qt5-assistant
+%files -n qt5%{?bootstrap:-bootstrap}-assistant
 %{_bindir}/assistant
 %{_qt5_bindir}/assistant
 %{_datadir}/applications/*assistant.desktop
 %{_datadir}/icons/hicolor/*/apps/assistant*.*
 
-%files -n qt5-designer-plugin-webkit
+%files -n qt5%{?bootstrap:-bootstrap}-designer-plugin-webkit
 %{_qt5_plugindir}/designer/libqwebview.so
 %{_qt5_libdir}/cmake/Qt5Designer/Qt5Designer_QWebViewPlugin.cmake
 
-%post -n qt5-qdbusviewer
+%post -n qt5%{?bootstrap:-bootstrap}-qdbusviewer
 touch --no-create %{_datadir}/icons/hicolor ||:
 
-%posttrans -n qt5-qdbusviewer
+%posttrans -n qt5%{?bootstrap:-bootstrap}-qdbusviewer
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
-%postun -n qt5-qdbusviewer
+%postun -n qt5%{?bootstrap:-bootstrap}-qdbusviewer
 if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%files -n qt5-qdbusviewer
+%files -n qt5%{?bootstrap:-bootstrap}-qdbusviewer
 %{_bindir}/qdbusviewer
 %{_qt5_bindir}/qdbusviewer
 %{_datadir}/applications/*qdbusviewer.desktop
 %{_datadir}/icons/hicolor/*/apps/qdbusviewer*.*
 
-%post devel
+%post dev
 touch --no-create %{_datadir}/icons/hicolor ||:
 
-%posttrans devel
+%posttrans dev
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 update-desktop-database -q &> /dev/null ||:
 
-%postun devel
+%postun dev
 if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%files devel
+%files dev
 %{_bindir}/designer
 %{_bindir}/lconvert
 %{_bindir}/linguist
@@ -379,7 +358,7 @@ fi
 %{_qt5_libdir}/cmake/Qt5UiTools/
 %{_qt5_libdir}/pkgconfig/Qt5UiTools.pc
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %files doc
 %doc LICENSE.FDL
 %{_qt5_docdir}/qtassistant.qch

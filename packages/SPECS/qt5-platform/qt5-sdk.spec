@@ -11,12 +11,12 @@ BuildArch: noarch
 BuildRequires: qt5-platform
 
 Requires: qt5-platform
-Requires: freedesktop-sdk
+Requires: freedesktop-sdk-base
 
 Requires: qt5-qtbase-dev
 
 %description
-Meta package for Gnome SDK dependencies
+Meta package for Qt 5 SDK dependencies
 
 %prep
 

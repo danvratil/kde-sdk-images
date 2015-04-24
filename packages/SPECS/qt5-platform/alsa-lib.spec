@@ -14,7 +14,7 @@ Patch0:   alsa-lib-1.0.24-config.patch
 Patch1:   alsa-lib-1.0.14-glibc-open.patch
 Patch2:   alsa-lib-1.0.16-no-dox-date.patch
 
-BuildRequires:  freedesktop-sdk-base
+BuildRequires:  qt5-sdk-base
 #BuildRequires:  doxygen
 
 %description

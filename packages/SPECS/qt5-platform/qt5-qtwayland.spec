@@ -1,4 +1,3 @@
-
 %global qt_module qtwayland
 
 Summary:        Qt5 - Wayland platform support and QtCompositor module
@@ -7,38 +6,30 @@ Version:        5.4.1
 Release:        1%{?dist}
 License:        LGPLv2 with exceptions or GPLv3 with exceptions
 Url:            http://qt-project.org/wiki/QtWayland
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-BuildRequires:  qt5-qtbase-devel >= %{version}
+BuildRequires:  freedesktop-sdk-base
+
+BuildRequires:  qt5-qtbase-dev
 BuildRequires:  qt5-qtbase-static
-BuildRequires:  qt5-qtdeclarative-devel
-BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  pkgconfig(wayland-scanner)
-BuildRequires:  pkgconfig(wayland-server)
-BuildRequires:  pkgconfig(wayland-client)
-BuildRequires:  pkgconfig(wayland-cursor)
-BuildRequires:  pkgconfig(wayland-egl)
-BuildRequires:  pkgconfig(egl)
-BuildRequires:  pkgconfig(gl)
-BuildRequires:  pkgconfig(glesv2)
-BuildRequires:  pkgconfig(xcomposite)
-BuildRequires:  pkgconfig(xrender)
-BuildRequires:  pkgconfig(libudev)
+BuildRequires:  qt5-qtdeclarative-dev
+
+BuildRequires:  mesa-libwayland-egl-dev
+BuildRequires:  libwayland-server-dev
+BuildRequires:  libwayland-cursor-dev
+BuildRequires:  libwayland-client-dev
+#BuildRequires:  pkgconfig(libudev)
 
 %{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
 
 %description
 %{summary}.
 
-%package devel
+%package dev
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       qt5-qtbase-devel%{?_isa}
-%description devel
+Requires:       qt5-qtbase-dev%{?_isa}
+%description dev
 %{summary}.
 
 %package examples
@@ -116,7 +107,7 @@ install -pm644 \
 %dir %{_qt5_libdir}/cmake/Qt5WaylandClient/
 %{_qt5_libdir}/cmake/Qt5WaylandClient/Qt5WaylandClient_*.cmake
 
-%files devel
+%files dev
 %{_qt5_bindir}/qtwaylandscanner
 %{_qt5_headerdir}/QtCompositor/
 %{_qt5_headerdir}/QtWaylandClient/

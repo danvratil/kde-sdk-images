@@ -7,7 +7,8 @@ License:        MIT
 URL:            http://xcb.freedesktop.org
 Source0:        http://xcb.freedesktop.org/dist/%{name}-%{version}.tar.bz2
 
-BuildRequires:  freedesktop-sdk
+BuildRequires:  freedesktop-sdk-base
+BuildRequires:  libxcb-dev
 
 BuildRequires:  xcb-util-dev
 

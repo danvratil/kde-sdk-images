@@ -1,49 +1,38 @@
-
 %global qt_module qtxmlpatterns
 
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-# only primary archs (for now), allow secondary to bootstrap
-%ifarch %{arm} %{ix86} x86_64
-%define docs 1
-%endif
-
 Summary: Qt5 - QtXmlPatterns component
-Name:    qt5-%{qt_module}
+Name:    qt5-%{qt_module}%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-BuildRequires: qt5-qtbase-devel >= %{version}
+BuildRequires: freedesktop-sdk-base
+BuildRequires: qt5-qtbase%{?bootstrap:-bootstrap}-dev
 
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
 
 %description
 The Qt XML Patterns module provides support for XPath, XQuery, XSLT,
 and XML Schema validation.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase%{?bootstrap:-bootstrap}-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 License: GFDL
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -67,16 +56,16 @@ pushd %{_target_platform}
 
 make %{?_smp_mflags}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make %{?_smp_mflags} docs
-%endif
 popd
+%endif
 
 
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %endif
 
@@ -107,7 +96,7 @@ popd
 %doc LICENSE.LGPL* LGPL_EXCEPTION.txt
 %{_qt5_libdir}/libQt5XmlPatterns.so.5*
 
-%files devel
+%files dev
 %{_qt5_bindir}/xmlpatterns*
 %{_bindir}/xmlpatterns*
 %{_qt5_headerdir}/Qt*/
@@ -117,7 +106,7 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5*.pc
 %{_qt5_archdatadir}/mkspecs/modules/*.pri
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %files doc
 %doc LICENSE.FDL
 %{_qt5_docdir}/qtxmlpatterns.qch

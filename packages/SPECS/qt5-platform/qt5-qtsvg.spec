@@ -1,9 +1,4 @@
-
 %global qt_module qtsvg
-
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-%define docs 1
 
 Summary: Qt5 - Support for rendering and displaying SVG
 Name:    qt5-%{qt_module}
@@ -13,14 +8,10 @@ Release: 1%{?dist}
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: pkgconfig(zlib)
+BuildRequires: freedesktop-sdk-base
+BuildRequires: qt5-qtbase-dev
 
 %{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
 
@@ -29,23 +20,21 @@ Scalable Vector Graphics (SVG) is an XML-based language for describing
 two-dimensional vector graphics. Qt provides classes for rendering and
 displaying SVG drawings in widgets and on other paint devices.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
 %package doc
 Summary: API documentation for %{name}
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
-%endif
 
 %package examples
 Summary: Programming examples for %{name}
@@ -64,19 +53,13 @@ pushd %{_target_platform}
 %{qmake_qt5} ..
 
 make %{?_smp_mflags}
-
-%if 0%{?docs}
 make %{?_smp_mflags} docs
-%endif
 popd
 
 
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-
-%if 0%{?docs}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-%endif
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
@@ -102,7 +85,7 @@ popd
 %dir %{_qt5_libdir}/cmake/Qt5Svg/
 %{_qt5_libdir}/cmake/Qt5Svg/Qt5Svg_*Plugin.cmake
 
-%files devel
+%files dev
 %{_qt5_headerdir}/QtSvg/
 %{_qt5_libdir}/libQt5Svg.so
 %{_qt5_libdir}/libQt5Svg.prl
@@ -110,12 +93,10 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5Svg.pc
 %{_qt5_archdatadir}/mkspecs/modules/qt_lib_svg*.pri
 
-%if 0%{?docs}
 %files doc
 %doc LICENSE.FDL
 %{_qt5_docdir}/qtsvg.qch
 %{_qt5_docdir}/qtsvg/
-%endif
 
 %if 0%{?_qt5_examplesdir:1}
 %files examples

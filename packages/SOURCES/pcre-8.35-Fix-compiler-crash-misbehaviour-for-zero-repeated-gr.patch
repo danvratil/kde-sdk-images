@@ -1,0 +1,197 @@
+From d35a6c663d37e072f4a5440f281f62aa6dc42418 Mon Sep 17 00:00:00 2001
+From: ph10 <ph10@2f5784b3-3f2a-0410-8824-cb99058d5e15>
+Date: Sat, 12 Jul 2014 18:22:54 +0000
+Subject: [PATCH] Fix compiler crash/misbehaviour for zero-repeated groups that
+ include a recursive back reference.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+git-svn-id: svn://vcs.exim.org/pcre/code/trunk@1495 2f5784b3-3f2a-0410-8824-cb99058d5e15
+Signed-off-by: Petr Písař <ppisar@redhat.com>
+
+Petr Pisar: Ported to 8.35.
+
+diff --git a/pcre_compile.c b/pcre_compile.c
+index 85d0e94..8276d0f 100644
+--- a/pcre_compile.c
++++ b/pcre_compile.c
+@@ -8267,12 +8267,16 @@ for (;;)
+ 
+     /* If it was a capturing subpattern, check to see if it contained any
+     recursive back references. If so, we must wrap it in atomic brackets.
+-    In any event, remove the block from the chain. */
++    Because we are moving code along, we must ensure that any pending recursive
++    references are updated. In any event, remove the block from the chain. */
+ 
+     if (capnumber > 0)
+       {
+       if (cd->open_caps->flag)
+         {
++        *code = OP_END;
++        adjust_recurse(start_bracket, 1 + LINK_SIZE,
++          (options & PCRE_UTF8) != 0, cd, cd->hwm);
+         memmove(start_bracket + 1 + LINK_SIZE, start_bracket,
+           IN_UCHARS(code - start_bracket));
+         *start_bracket = OP_ONCE;
+diff --git a/testdata/testinput11 b/testdata/testinput11
+index 391ada7..7e8e542 100644
+--- a/testdata/testinput11
++++ b/testdata/testinput11
+@@ -132,4 +132,6 @@ is required for these tests. --/
+ 
+ /abc(d|e)(*THEN)x(123(*THEN)4|567(b|q)(*THEN)xx)/B
+ 
++/(((a\2)|(a*)\g<-1>))*a?/B
++
+ /-- End of testinput11 --/
+diff --git a/testdata/testinput2 b/testdata/testinput2
+index 81be076..c6816bf 100644
+--- a/testdata/testinput2
++++ b/testdata/testinput2
+@@ -4035,6 +4035,8 @@ backtracking verbs. --/
+ 
+ /(?(R&6yh)abc)/
+ 
++/(((a\2)|(a*)\g<-1>))*a?/BZ
++
+ /-- Test the ugly "start or end of word" compatibility syntax --/
+ 
+ /[[:<:]]red[[:>:]]/BZ
+diff --git a/testdata/testoutput11-16 b/testdata/testoutput11-16
+index f1ad888..a1db3f3 100644
+--- a/testdata/testoutput11-16
++++ b/testdata/testoutput11-16
+@@ -709,4 +709,28 @@ Memory allocation (code space): 14
+  62     End
+ ------------------------------------------------------------------
+ 
++/(((a\2)|(a*)\g<-1>))*a?/B
++------------------------------------------------------------------
++  0  39 Bra
++  2     Brazero
++  3  32 SCBra 1
++  6  27 Once
++  8  12 CBra 2
++ 11   7 CBra 3
++ 14     a
++ 16     \2
++ 18   7 Ket
++ 20  11 Alt
++ 22   5 CBra 4
++ 25     a*
++ 27   5 Ket
++ 29  22 Recurse
++ 31  23 Ket
++ 33  27 Ket
++ 35  32 KetRmax
++ 37     a?+
++ 39  39 Ket
++ 41     End
++------------------------------------------------------------------
++
+ /-- End of testinput11 --/
+diff --git a/testdata/testoutput11-32 b/testdata/testoutput11-32
+index 266e55d..7b7b030 100644
+--- a/testdata/testoutput11-32
++++ b/testdata/testoutput11-32
+@@ -709,4 +709,28 @@ Memory allocation (code space): 28
+  62     End
+ ------------------------------------------------------------------
+ 
++/(((a\2)|(a*)\g<-1>))*a?/B
++------------------------------------------------------------------
++  0  39 Bra
++  2     Brazero
++  3  32 SCBra 1
++  6  27 Once
++  8  12 CBra 2
++ 11   7 CBra 3
++ 14     a
++ 16     \2
++ 18   7 Ket
++ 20  11 Alt
++ 22   5 CBra 4
++ 25     a*
++ 27   5 Ket
++ 29  22 Recurse
++ 31  23 Ket
++ 33  27 Ket
++ 35  32 KetRmax
++ 37     a?+
++ 39  39 Ket
++ 41     End
++------------------------------------------------------------------
++
+ /-- End of testinput11 --/
+diff --git a/testdata/testoutput11-8 b/testdata/testoutput11-8
+index d4a2133..f5ec652 100644
+--- a/testdata/testoutput11-8
++++ b/testdata/testoutput11-8
+@@ -709,4 +709,28 @@ Memory allocation (code space): 10
+  76     End
+ ------------------------------------------------------------------
+ 
++/(((a\2)|(a*)\g<-1>))*a?/B
++------------------------------------------------------------------
++  0  57 Bra
++  3     Brazero
++  4  48 SCBra 1
++  9  40 Once
++ 12  18 CBra 2
++ 17  10 CBra 3
++ 22     a
++ 24     \2
++ 27  10 Ket
++ 30  16 Alt
++ 33   7 CBra 4
++ 38     a*
++ 40   7 Ket
++ 43  33 Recurse
++ 46  34 Ket
++ 49  40 Ket
++ 52  48 KetRmax
++ 55     a?+
++ 57  57 Ket
++ 60     End
++------------------------------------------------------------------
++
+ /-- End of testinput11 --/
+diff --git a/testdata/testoutput2 b/testdata/testoutput2
+index 114817a..1e87026 100644
+--- a/testdata/testoutput2
++++ b/testdata/testoutput2
+@@ -14093,6 +14093,30 @@ Failed: malformed number or name after (?( at offset 4
+ /(?(R&6yh)abc)/
+ Failed: group name must start with a non-digit at offset 5
+ 
++/(((a\2)|(a*)\g<-1>))*a?/BZ
++------------------------------------------------------------------
++        Bra
++        Brazero
++        SCBra 1
++        Once
++        CBra 2
++        CBra 3
++        a
++        \2
++        Ket
++        Alt
++        CBra 4
++        a*
++        Ket
++        Recurse
++        Ket
++        Ket
++        KetRmax
++        a?+
++        Ket
++        End
++------------------------------------------------------------------
++
+ /-- Test the ugly "start or end of word" compatibility syntax --/
+ 
+ /[[:<:]]red[[:>:]]/BZ
+-- 
+1.9.3
+

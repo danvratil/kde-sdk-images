@@ -1,9 +1,4 @@
-
 %global qt_module qtquick1
-
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-%define docs 1
 
 Summary: A declarative language for describing user interfaces in Qt5
 Name:    qt5-%{qt_module}
@@ -13,21 +8,14 @@ Release: 1%{?dist}
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?snap:1}
-Source0: http://download.qt-project.org/snapshots/qt/5.4/%{version}-%{pre}/%{snap}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
-%endif
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: qt5-qtscript-devel >= %{version}
-BuildRequires: qt5-qttools-devel >= %{version}
-BuildRequires: qt5-qtwebkit-devel >= %{version}
-BuildRequires: qt5-qtxmlpatterns-devel >= %{version}
+BuildRequires: freedesktop-sdk-base
+BuildRequires: qt5-qtbase-dev
+BuildRequires: qt5-qtscript-dev
+BuildRequires: qt5-qttools-dev
+BuildRequires: qt5-qtwebkit-dev
+BuildRequires: qt5-qtxmlpatterns-dev
 
 %{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
 
@@ -42,23 +30,21 @@ language for describing user interfaces and a language runtime. A
 collection of C++ APIs is used to integrate these high level features
 with classic Qt applications.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
-%package doc
-Summary: API documentation for %{name}
-Requires: %{name} = %{version}-%{release}
+#%package doc
+#Summary: API documentation for %{name}
+#Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
-BuildArch: noarch
-%description doc
-%{summary}.
-%endif
+#BuildRequires: qt5-qttools-dev
+#BuildArch: noarch
+#%description doc
+#%{summary}.
 
 %package examples
 Summary: Programming examples for %{name}
@@ -77,19 +63,13 @@ pushd %{_target_platform}
 %{qmake_qt5} ..
 
 make %{?_smp_mflags}
-
-%if 0%{?docs}
-make %{?_smp_mflags} docs
-%endif
+#make %{?_smp_mflags} docs
 popd
 
 
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-
-%if 0%{?docs}
-make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-%endif
+#make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
 # hardlink files to %{_bindir}, add -qt5 postfix to not conflict
 mkdir %{buildroot}%{_bindir}
@@ -129,7 +109,7 @@ popd
 %dir %{_qt5_libdir}/cmake/Qt5Designer/
 %{_qt5_libdir}/cmake/Qt5Designer/Qt5Designer_QDeclarativeViewPlugin.cmake
 
-%files devel
+%files dev
 %{_qt5_bindir}/qml1plugindump*
 %{_qt5_bindir}/qmlviewer*
 %{_bindir}/qml1plugindump*
@@ -141,10 +121,8 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5Declarative.pc
 %{_qt5_archdatadir}/mkspecs/modules/qt_lib_declarative*.pri
 
-%if 0%{?docs}
-%files doc
-%{_qt5_docdir}/*
-%endif
+#%files doc
+#%{_qt5_docdir}/*
 
 %if 0%{?_qt5_examplesdir:1}
 %files examples

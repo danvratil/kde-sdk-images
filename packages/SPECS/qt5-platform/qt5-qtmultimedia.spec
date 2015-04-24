@@ -1,37 +1,29 @@
-
 %global qt_module qtmultimedia
 
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-%define docs 1
+%define openal 1
 
 Summary: Qt5 - Multimedia support
 Name:    qt5-%{qt_module}
 Version: 5.4.1
-Release: 2%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: qt5-qtdeclarative-devel >= %{version}
-BuildRequires: pkgconfig(alsa)
-BuildRequires: pkgconfig(gstreamer-1.0)
-BuildRequires: pkgconfig(gstreamer-app-1.0)
-BuildRequires: pkgconfig(gstreamer-audio-1.0)
-BuildRequires: pkgconfig(gstreamer-base-1.0)
-BuildRequires: pkgconfig(gstreamer-pbutils-1.0)
-BuildRequires: pkgconfig(gstreamer-plugins-bad-1.0)
-BuildRequires: pkgconfig(gstreamer-video-1.0)
-BuildRequires: pkgconfig(libpulse) pkgconfig(libpulse-mainloop-glib)
-BuildRequires: pkgconfig(openal)
-BuildRequires: pkgconfig(xv)
+BuildRequires: freedesktop-sdk-base
+
+BuildRequires: qt5-qtbase-dev
+BuildRequires: qt5-qtdeclarative-dev
+
+BuildRequires: pulseaudio-libs-dev
+BuildRequires: gstreamer1-dev
+BuildRequires: gstreamer1-plugins-base-dev
+BuildRequires: alsa-lib-dev
+BuildRequires: openal-soft-dev
+#BuildRequires: xv-dev
+#BuildRequires: gstreamer1-plugins-bad-free
 
 %{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
 
@@ -41,25 +33,23 @@ easily take advantage of a platforms multimedia capabilites and hardware.
 This ranges from the playback and recording of audio and video content to
 the use of available devices like cameras and radios.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-Requires: qt5-qtdeclarative-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase-dev%{?_isa}
+Requires: qt5-qtdeclarative-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
 %package doc
 Summary: API documentation for %{name}
 License: GFDL
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
-%endif
 
 %package examples
 Summary: Programming examples for %{name}
@@ -85,19 +75,13 @@ pushd %{_target_platform}
   GST_VERSION=%{gst}
 
 make %{?_smp_mflags}
-
-%if 0%{?docs}
 make %{?_smp_mflags} docs
-%endif
 popd
 
 
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-
-%if 0%{?docs}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-%endif
 
 ## .prl/.la file love
 # nuke .prl reference(s) to %%buildroot, excessive (.la-like) libs
@@ -120,7 +104,7 @@ popd
 %{_qt5_libdir}/libQt5Multimedia.so.5*
 %{_qt5_libdir}/libQt5MultimediaQuick_p.so.5*
 %{_qt5_libdir}/libQt5MultimediaWidgets.so.5*
-%{_qt5_libdir}/libqgsttools_p.so.1*
+#%{_qt5_libdir}/libqgsttools_p.so.1*
 %if 0%{?openal}
 %{_qt5_archdatadir}/qml/QtAudioEngine/
 %endif
@@ -132,7 +116,7 @@ popd
 %{_qt5_libdir}/cmake/Qt5Multimedia/Qt5Multimedia_*Plugin.cmake
 %dir %{_qt5_libdir}/cmake/Qt5MultimediaWidgets/
 
-%files devel
+%files dev
 %{_qt5_headerdir}/QtMultimedia/
 %{_qt5_headerdir}/QtMultimediaQuick_p/
 %{_qt5_headerdir}/QtMultimediaWidgets/
@@ -142,8 +126,8 @@ popd
 %{_qt5_libdir}/libQt5MultimediaQuick_p.prl
 %{_qt5_libdir}/libQt5MultimediaWidgets.so
 %{_qt5_libdir}/libQt5MultimediaWidgets.prl
-%{_qt5_libdir}/libqgsttools_p.so
-%{_qt5_libdir}/libqgsttools_p.prl
+#%{_qt5_libdir}/libqgsttools_p.so
+#%{_qt5_libdir}/libqgsttools_p.prl
 %{_qt5_libdir}/cmake/Qt5Multimedia/Qt5MultimediaConfig*.cmake
 %{_qt5_libdir}/cmake/Qt5MultimediaWidgets/Qt5MultimediaWidgetsConfig*.cmake
 %{_qt5_libdir}/pkgconfig/Qt5Multimedia.pc
@@ -151,14 +135,12 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5MultimediaWidgets.pc
 %{_qt5_archdatadir}/mkspecs/modules/*.pri
 
-%if 0%{?docs}
 %files doc
 %doc LICENSE.FDL
 %{_qt5_docdir}/qtmultimedia.qch
 %{_qt5_docdir}/qtmultimedia/
 %{_qt5_docdir}/qtmultimediawidgets.qch
 %{_qt5_docdir}/qtmultimediawidgets/
-%endif
 
 %if 0%{?_qt5_examplesdir:1}
 %files examples

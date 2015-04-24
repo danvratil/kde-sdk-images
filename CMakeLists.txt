@@ -96,9 +96,17 @@ set(freedesktop_PACKAGES
 )
 
 set(qt5_PACKAGES
+    qt5-sdk-base
+
     qt5-platform
     qt5-sdk
 
+    # pcre16 and pcre32 not provided by yocto
+    pcre
+    # qtbase, qtwayland
+    #libudev
+
+    # qtbase
     at-spi2-core
     alsa-lib
     xcb-util
@@ -106,9 +114,60 @@ set(qt5_PACKAGES
     xcb-util-keysyms
     xcb-util-renderutil
     xcb-util-wm
-    xkeyboard-config
+    #NetworkManager
 
+    # qttools
+    clucene
+
+    # qtimageformats
+    libmng
+    #libjasper
+
+    # qtsensors
+    #geoclue
+    #gypsy
+
+    # qtconnectivity
+    #libical
+    #bluez
+
+    # qtmultimedia
+    portaudio
+    openal-soft
+    #xv
+    #gstreamer1-plugins-bad-free
+
+    # Bootstrap qttools
+    qt5-qtbase-bootstrap
+    qt5-qtxmlpatterns-bootstrap
+    qt5-qtdeclarative-bootstrap
+    qt5-qtlocation-bootstrap
+    qt5-qtsensors-bootstrap
+    qt5-qtwebkit-bootstrap
+    qt5-qttools-bootstrap
+
+    # Build normal qt5-qttools against bootstrap
+    qt5-qttools
+
+    # Build the rest of Qt5 with normal qttools
     qt5-qtbase
+    qt5-qtdeclarative
+    #qt5-qtconnectivity # missing bluez
+    qt5-qtgraphicaleffects
+    qt5-qtimageformats
+    qt5-qtlocation
+    qt5-qtmultimedia
+    qt5-qtquick1
+    qt5-qtquickcontrols
+    qt5-qtscript
+    qt5-qtsensors
+    qt5-qtserialport
+    qt5-qtsvg
+    qt5-qttranslations
+    #qt5-qtwayland
+    qt5-qtwebkit
+    qt5-qtx11extras
+    qt5-qtxmlpatterns
 )
 
 
@@ -146,13 +205,13 @@ macro(parseSPECFile package specFile sourcesList depsList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo_append "-- Parsing SPEC file for package ${package}")
     # The path must be relative - we use it as both target name and actual file path,
     # but absolute paths differ here and in chroot in build.sh
-    execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --qf "%{NAME}=packages/RPMS/%{ARCH}/%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm;"
+    execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -q ${specFile} --qf "%{NAME}=packages/RPMS/%{ARCH}/%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm;"
                     OUTPUT_VARIABLE rawProvidesList)
-    execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --buildrequires
+    execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -q ${specFile} --buildrequires
                     OUTPUT_VARIABLE rawBuildRequiresList)
-#    execute_process(COMMAND rpmspec -D "dist .sdk" -q ${specFile} --requires
+#    execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -q ${specFile} --requires
 #                    OUTPUT_VARIABLE rawRequiresList)
-    execute_process(COMMAND rpmspec -D "dist .sdk" -P ${specFile}
+    execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -P ${specFile}
                     OUTPUT_VARIABLE parsedFile)
 
     foreach(provides ${rawProvidesList})
@@ -203,6 +262,7 @@ macro(generatePackageTargets platform packages)
     # ${package} (meta target)
     #  '-- ${package}-build (build)
     #       '-- ${package}-sources (get sources)
+    set(all_destFiles "")
     foreach(package ${packages})
         add_custom_target(${package})
 
@@ -215,13 +275,16 @@ macro(generatePackageTargets platform packages)
             get_filename_component(fileName ${source} NAME)
             set(destFile "${CMAKE_SOURCE_DIR}/packages/SOURCES/${fileName}")
             LIST(APPEND sourceFiles ${destFile})
-
-            add_custom_command(
-                OUTPUT ${destFile}
-                COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Downloading source for ${package}\"
-                COMMAND if [ -e ${destFile} ]; then echo \"${destFile} already exists\"\; else wget ${source} -O ${destFile}\; fi
-                DEPENDS ${specFile}
-            )
+            LIST(FIND all_destFiles ${destFile} found)
+            if (${found} EQUAL -1)
+                LIST(APPEND all_destFiles ${destFile})
+                add_custom_command(
+                    OUTPUT ${destFile}
+                    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Downloading source for ${package}\"
+                    COMMAND if [ -e ${destFile} ]; then echo \"${destFile} already exists\"\; else wget ${source} -O ${destFile}\; fi
+                    DEPENDS ${specFile}
+                )
+            endif()
         endforeach()
         if ("${sourceFiles}")
             # Only create the ${package}-source target if there are any sources
@@ -269,6 +332,7 @@ macro(generatePackageTargets platform packages)
         add_dependencies(${package} ${package}-build)
 
     endforeach()
+    unset(all_destFiles)
 endmacro()
 
 macro(createBaseImages)

@@ -1,9 +1,19 @@
 %global qt_module qtbase
 
+# TODO
+%global build_mariadb 0
+%global build_postgresql 0
+%global build_firebird 0
+%global build_odbc 0
+%global build_tds 0
+%global build_cups 0
+
+%global build_glxutils 0
+
 %global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Summary: Qt5 - QtBase components
-Name:    qt5-qtbase
+Name:    qt5-qtbase%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
@@ -84,21 +94,38 @@ Source1: macros.qt5
 # RPM drag in gtk2 as a dependency for the GTK+ 2 dialog support.
 %global __requires_exclude_from ^%{_qt5_plugindir}/platformthemes/.*$
 
-BuildRequires: freedesktop-sdk
-
-# for %%check
-#BuildRequires: cups-dev
-
+BuildRequires: freedesktop-sdk-base
+BuildRequires: cmake
+%if 0%{?build_cups}
+BuildRequires: cups-dev
+%endif
 BuildRequires: alsa-lib-dev
+BuildRequires: dbus-dev
+BuildRequires: libdrm-dev
+BuildRequires: mesa-libGL-dev
+BuildRequires: glib2-dev
+BuildRequires: gtk2-dev
 
-# xcb-sm
+BuildRequires: libICE-dev
+BuildRequires: libSM-dev
+
 #BuildRequires: libudev-dev
 #BuildRequires: NetworkManager-dev
 #BuildRequires: pulseaudio-mainloop-glib
-
 #BuildRequires: libxcb-xkb-dev
 
+BuildRequires: xkeyboard-config-dev
+
 BuildRequires: at-spi2-core-dev
+BuildRequires: mesa-libEGL-dev
+#BuildRequires: glesv2
+
+BuildRequires: harfbuzz-dev
+BuildRequires: pcre16-dev
+
+BuildRequires: libxcb-dev
+BuildRequires: libxkbcommon-dev
+BuildRequires: libxkbcommon-x11-dev
 
 BuildRequires: xcb-util-wm-dev
 BuildRequires: xcb-util-image-dev
@@ -122,18 +149,24 @@ handling.
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-gui%{?_isa}
+Requires: mesa-libEGL-dev
+Requires: mesa-libGL-dev
 %description dev
 %{summary}.
 
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 License: GFDL
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-dev
+# always use the bootstrap version, because non-bootstrapped
+# qt5-qttools require qt5-qtbase
+BuildRequires: qt5-qttools-bootstrap-dev
 BuildArch: noarch
 %description doc
 %{summary}.
+%endif
 
 %package examples
 Summary: Programming examples for %{name}
@@ -144,55 +177,66 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 %package static
 Summary: Static library files for %{name}
 Requires: %{name}-dev%{?_isa} = %{version}-%{release}
-Requires: freedesktop-platform
+Requires: fontconfig-dev
+Requires: glib2-dev
 %description static
 %{summary}.
 
+%if 0%{?build_mariadb}
 %package ibase
 Summary: IBase driver for Qt5's SQL classes
-BuildRequires: firebird-devel
+BuildRequires: firebird-dev
 Requires: %{name}%{?_isa} = %{version}-%{release}
 %description ibase
 %{summary}.
+%endif
 
+%if 0%{?build_firebird}
 %package mysql
 Summary: MySQL driver for Qt5's SQL classes
-BuildRequires: mysql-devel
+BuildRequires: mysql-dev
 Requires: %{name}%{?_isa} = %{version}-%{release}
 %description mysql
 %{summary}.
+%endif
 
+%if 0%{?build_odbc}
 %package odbc
 Summary: ODBC driver for Qt5's SQL classes
-BuildRequires: unixODBC-devel
+BuildRequires: unixODBC-dev
 Requires: %{name}%{?_isa} = %{version}-%{release}
 %description odbc
 %{summary}.
+%endif
 
+%if 0%{?build_postgresql}
 %package postgresql
 Summary: PostgreSQL driver for Qt5's SQL classes
-BuildRequires: postgresql-devel
+BuildRequires: postgresql-dev
 Requires: %{name}%{?_isa} = %{version}-%{release}
 %description postgresql
 %{summary}.
+%endif
 
+%if 0%{?build_tds}
 %package tds
 Summary: TDS driver for Qt5's SQL classes
-BuildRequires: freetds-devel
+BuildRequires: freetds-dev
 Requires: %{name}%{?_isa} = %{version}-%{release}
 %description tds
 %{summary}.
+%endif
 
 # debating whether to do 1 subpkg per library or not -- rex
 %package gui
 Summary: Qt5 GUI-related libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Obsoletes: qt5-qtbase-x11 < 5.2.0
-Provides:  qt5-qtbase-x11 = %{version}-%{release}
 
+%if 0%{build_glxutils}
 # for Source6: 10-qt5-check-opengl2.sh:
 # glxinfo
 Requires: glx-utils
+%endif
 
 %description gui
 Qt5 libraries used for drawing widgets and OpenGL items.
@@ -294,9 +338,11 @@ test -x configure || chmod +x configure
 
 make %{?_smp_mflags}
 
+%if ! 0%{?bootstrap}
 # wierd but necessary, to force regeration to use just-built qdoc
 rm -fv src/corelib/Makefile
 make %{?_smp_mflags} docs
+%endif
 
 
 %install
@@ -366,10 +412,13 @@ for prl_file in libQt5*.prl ; do
 done
 popd
 
+%if 0%{build_glxutils}
 install -p -m755 -D %{SOURCE6} %{buildroot}%{_sysconfdir}/X11/xinit/xinitrc.d/10-qt5-check-opengl2.sh
+%endif
 
 
 ## work-in-progress, doesn't work yet -- rex
+%if 0
 %check
 export CMAKE_PREFIX_PATH=%{buildroot}%{_prefix}
 export CTEST_OUTPUT_ON_FAILURE=1
@@ -380,6 +429,7 @@ pushd tests/auto/cmake/%{_target_platform}
 cmake .. ||:
 ctest --output-on-failure ||:
 popd
+%endif
 
 
 %post
@@ -434,13 +484,16 @@ popd
 %dir %{_qt5_plugindir}/platforminputcontexts/
 %dir %{_qt5_plugindir}/platforms/
 %dir %{_qt5_plugindir}/platformthemes/
+%if 0%{?build_cups}
 %dir %{_qt5_plugindir}/printsupport/
+%endif
 %dir %{_qt5_plugindir}/script/
 %dir %{_qt5_plugindir}/sqldrivers/
 %dir %{_qt5_plugindir}/styles/
 %{_qt5_plugindir}/sqldrivers/libqsqlite.so
 %{_qt5_libdir}/cmake/Qt5Sql/Qt5Sql_QSQLiteDriverPlugin.cmake
 
+%if ! 0%{?bootstrap}
 %files doc
 %doc LICENSE.FDL
 %doc dist/README dist/changes-5.*
@@ -459,6 +512,7 @@ popd
 %{_qt5_docdir}/qttestlib/
 %{_qt5_docdir}/qtwidgets/
 %{_qt5_docdir}/qtxml/
+%endif
 
 %files dev
 %{rpm_macros_dir}/macros.qt5
@@ -567,33 +621,45 @@ popd
 %files examples
 %{_qt5_examplesdir}/
 
+%if 0%{?build_odbc}
 %files ibase
 %{_qt5_plugindir}/sqldrivers/libqsqlibase.so
 %{_qt5_libdir}/cmake/Qt5Sql/Qt5Sql_QIBaseDriverPlugin.cmake
+%endif
 
+%if 0%{?build_mysql}
 %files mysql
 %{_qt5_plugindir}/sqldrivers/libqsqlmysql.so
 %{_qt5_libdir}/cmake/Qt5Sql/Qt5Sql_QMYSQLDriverPlugin.cmake
+%endif
 
+%if 0%{?build_odbc}
 %files odbc
 %{_qt5_plugindir}/sqldrivers/libqsqlodbc.so
 %{_qt5_libdir}/cmake/Qt5Sql/Qt5Sql_QODBCDriverPlugin.cmake
+%endif
 
+%if 0%{?build_postgresql}
 %files postgresql
 %{_qt5_plugindir}/sqldrivers/libqsqlpsql.so
 %{_qt5_libdir}/cmake/Qt5Sql/Qt5Sql_QPSQLDriverPlugin.cmake
+%endif
 
+%if 0%{build_tds}
 %files tds
 %{_qt5_plugindir}/sqldrivers/libqsqltds.so
 %{_qt5_libdir}/cmake/Qt5Sql/Qt5Sql_QTDSDriverPlugin.cmake
+%endif
 
 %post gui -p /sbin/ldconfig
 %postun gui -p /sbin/ldconfig
 
 %files gui
+%if 0%{?build_glxutils}
 %dir %{_sysconfdir}/X11/xinit
 %dir %{_sysconfdir}/X11/xinit/xinitrc.d/
 %{_sysconfdir}/X11/xinit/xinitrc.d/10-qt5-check-opengl2.sh
+%endif
 %{_qt5_libdir}/libQt5Gui.so.5*
 %{_qt5_libdir}/libQt5OpenGL.so.5*
 %{_qt5_libdir}/libQt5PrintSupport.so.5*
@@ -607,11 +673,9 @@ popd
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevMousePlugin.cmake
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevTabletPlugin.cmake
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevTouchScreenPlugin.cmake
-%if 1
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
-%{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QKmsIntegrationPlugin.cmake
+#%{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QKmsIntegrationPlugin.cmake
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake
-%endif
 %{_qt5_plugindir}/imageformats/libqgif.so
 %{_qt5_plugindir}/imageformats/libqico.so
 %{_qt5_plugindir}/imageformats/libqjpeg.so
@@ -626,19 +690,19 @@ popd
 %{_qt5_plugindir}/platforms/libqminimal.so
 %{_qt5_plugindir}/platforms/libqoffscreen.so
 %{_qt5_plugindir}/platforms/libqxcb.so
-%if 1
 %{_qt5_plugindir}/platforms/libqeglfs.so
-%{_qt5_plugindir}/platforms/libqkms.so
+#%{_qt5_plugindir}/platforms/libqkms.so
 %{_qt5_plugindir}/platforms/libqminimalegl.so
-%endif
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake
 %{_qt5_plugindir}/platformthemes/libqgtk2.so
 %{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk2ThemePlugin.cmake
+%if 0%{?build_cups}
 %{_qt5_plugindir}/printsupport/libcupsprintersupport.so
 %{_qt5_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupport_QCupsPrinterSupportPlugin.cmake
+%endif
 
 
 %changelog

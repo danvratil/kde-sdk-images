@@ -1,4 +1,3 @@
-
 %global qt_module qtx11extras
 
 Summary: Qt5 - X11 support library
@@ -9,13 +8,11 @@ Release: 1%{?dist}
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-BuildRequires: qt5-qtbase-devel >= %{version}
+BuildRequires: freedesktop-sdk-base
+BuildRequires: qt5-qtbase-dev
+
 %{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
 
 %description
@@ -23,11 +20,11 @@ The X11 Extras module provides features specific to platforms using X11, e.g.
 Linux and UNIX-like systems including embedded Linux systems that use the X
 Window System.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase-dev%{?_isa}
+%description dev
 %{summary}.
 
 
@@ -66,7 +63,7 @@ popd
 %doc LGPL_EXCEPTION.txt LICENSE.GPL* LICENSE.LGPL*
 %{_qt5_libdir}/libQt5X11Extras.so.5*
 
-%files devel
+%files dev
 %{_qt5_headerdir}/QtX11Extras/
 %{_qt5_libdir}/libQt5X11Extras.so
 %{_qt5_libdir}/libQt5X11Extras.prl

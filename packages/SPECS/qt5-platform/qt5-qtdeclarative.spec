@@ -1,28 +1,14 @@
-
 %global qt_module qtdeclarative
 
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-# only primary archs (for now), allow secondary to bootstrap
-%if ! 0%{?bootstrap}
-%ifarch %{arm} %{ix86} x86_64
-%define docs 1
-%endif
-%endif
-
 Summary: Qt5 - QtDeclarative component
-Name:    qt5-%{qt_module}
+Name:    qt5-%{qt_module}%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
 # See LICENSE.GPL LICENSE.LGPL LGPL_EXCEPTION.txt, for details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
 # FIXME?  now bases on whether qtbase supports sse2 (or not)
 # support no_sse2 CONFIG (fedora i686 builds cannot assume -march=pentium4 -msse2 -mfpmath=sse flags, or the JIT that needs them)
@@ -31,38 +17,37 @@ Patch1: qtdeclarative-opensource-src-5.2.0-no_sse2.patch
 
 Obsoletes: qt5-qtjsbackend < 5.2.0
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-%if ! 0%{?bootstrap}
-BuildRequires: pkgconfig(Qt5XmlPatterns)
-%endif
-BuildRequires: python
+BuildRequires: freedesktop-sdk-base
 
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
+BuildRequires: qt5-qtbase%{?bootstrap:-bootstrap}-dev
+BuildRequires: qt5-qtxmlpatterns%{?bootstrap:-bootstrap}-dev
+
+
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
 
 %description
 %{summary}.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Obsoletes: qt5-qtjsbackend-devel < 5.2.0
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+%description dev
 %{summary}.
 
 %package static
 Summary: Static library files for %{name}
-Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+Requires: %{name}-dev%{?_isa} = %{version}-%{release}
 %description static
 %{summary}.
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 License: GFDL
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -100,22 +85,14 @@ make %{?_smp_mflags} -C src/qml
 popd
 %endif
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make %{?_smp_mflags} docs -C %{_target_platform}
 %endif
 
 
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
-
-#ifarch %{ix86}
-%if 0
-mkdir -p %{buildroot}%{_qt5_libdir}/sse2
-mv %{buildroot}%{_qt5_libdir}/libQt5Qml.so.5* %{buildroot}%{_qt5_libdir}/sse2/
-make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}-no_sse2/src/qml
-%endif
-
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %endif
 
@@ -147,10 +124,7 @@ popd
 %doc LICENSE.GPL* LICENSE.LGPL* LGPL_EXCEPTION.txt
 %doc dist/changes*
 %{_qt5_libdir}/libQt5Qml.so.5*
-#ifarch %{ix86}
-%if 0
-%{_qt5_libdir}/sse2/libQt5Qml.so.5*
-%endif
+#%{_qt5_libdir}/sse2/libQt5Qml.so.5*
 %{_qt5_libdir}/libQt5Quick.so.5*
 %{_qt5_libdir}/libQt5QuickWidgets.so.5*
 %{_qt5_libdir}/libQt5QuickParticles.so.5*
@@ -161,7 +135,7 @@ popd
 %{_qt5_libdir}/cmake/Qt5Qml/Qt5Qml_QTcpServerConnection.cmake
 %{_qt5_libdir}/cmake/Qt5Qml/Qt5Qml_QtQuick2Plugin.cmake
 
-%files devel
+%files dev
 %{_bindir}/qml*
 %{_qt5_bindir}/qml*
 %{_qt5_headerdir}/Qt*/
@@ -179,7 +153,7 @@ popd
 %{_qt5_libdir}/libQt5QmlDevTools.*a
 %{_qt5_libdir}/libQt5QmlDevTools.prl
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %files doc
 %{_qt5_docdir}/qtqml.qch
 %{_qt5_docdir}/qtqml/

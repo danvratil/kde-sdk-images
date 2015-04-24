@@ -1,17 +1,9 @@
-
 %global qt_module qtwebkit
 
 %global _hardened_build 1
 
-# define to build docs, need to undef this for bootstrapping
-# where qt5-qttools builds are not yet available
-# only primary archs (for now), allow secondary to bootstrap
-%ifarch %{arm} %{ix86} x86_64
-%define docs 1
-%endif
-
 Summary: Qt5 - QtWebKit components
-Name:    qt5-qtwebkit
+Name:    qt5-qtwebkit%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
@@ -19,11 +11,7 @@ Release: 1%{?dist}
 # See also http://qt-project.org/doc/qt-5.0/qtdoc/licensing.html
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
 # Search /usr/lib{,64}/mozilla/plugins-wrapped for browser plugins too
 Patch1: qtwebkit-opensource-src-5.2.0-pluginpath.patch
@@ -33,14 +21,6 @@ Patch3: qtwebkit-opensource-src-5.0.1-debuginfo.patch
 
 # tweak linker flags to minimize memory usage on "small" platforms
 Patch4: qtwebkit-opensource-src-5.2.0-save_memory.patch
-
-# use unbundled system angleproject library
-#define system_angle 1
-# NEEDS REBASE -- rex
-Patch5: qtwebkit-opensource-src-5.0.2-system_angle.patch
-# Fix compilation against latest ANGLE
-# https://bugs.webkit.org/show_bug.cgi?id=109127
-Patch6: webkit-commit-142567.patch
 
 # Add AArch64 support
 Patch7: 0001-Add-ARM-64-support.patch
@@ -58,63 +38,46 @@ Patch10: qt5-qtwebkit-gcc5.patch
 # https://codereview.qt-project.org/#/c/108936/
 Patch11: qtwebkit-opensource-src-5.4.1-private_browsing.patch
 
-%if 0%{?system_angle}
-BuildRequires: angleproject-devel angleproject-static
-%endif
+BuildRequires: qt5-qtbase%{?bootstrap:-bootstrap}-dev
+BuildRequires: qt5-qtdeclarative%{?bootstrap:-bootstrap}-dev
+BuildRequires: qt5-qtlocation%{?bootstrap:-bootstrap}-dev
+BuildRequires: qt5-qtsensors%{?bootstrap:-bootstrap}-dev
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: qt5-qtdeclarative-devel >= %{version}
-BuildRequires: qt5-qtlocation-devel
-BuildRequires: qt5-qtsensors-devel
+BuildRequires: freedesktop-sdk-base
 
-BuildRequires: bison
-BuildRequires: flex
-BuildRequires: gperf
-BuildRequires: libicu-devel
-BuildRequires: libjpeg-devel
-BuildRequires: pkgconfig(gio-2.0) pkgconfig(glib-2.0)
-BuildRequires: pkgconfig(fontconfig)
-BuildRequires: pkgconfig(gl)
-# gstreamer media support
-%if 0%{?fedora} > 20 || 0%{?rhel} > 7
-BuildRequires: pkgconfig(gstreamer-1.0) pkgconfig(gstreamer-app-1.0)
-%else
-BuildRequires: pkgconfig(gstreamer-0.10) pkgconfig(gstreamer-app-0.10)
-%endif
-BuildRequires: pkgconfig(libpng)
-BuildRequires: pkgconfig(libpcre)
-BuildRequires: pkgconfig(libudev)
-%if 0%{?fedora} || 0%{?rhel} > 6
-BuildRequires: pkgconfig(libwebp)
-%endif
-BuildRequires: pkgconfig(libxslt)
-BuildRequires: pkgconfig(sqlite3)
-BuildRequires: pkgconfig(xcomposite) pkgconfig(xrender)
-BuildRequires: perl perl(version) perl(Digest::MD5) perl(Text::ParseWords)
-BuildRequires: ruby
-BuildRequires: zlib-devel
+BuildRequires: gstreamer1-dev
+BuildRequires: gstreamer1-plugins-base-dev
 
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
+BuildRequires: libXrender-dev
+BuildRequires: glib2-dev
+BuildRequires: mesa-libGL-dev
+BuildRequires: pcre16-dev
+BuildRequires: libXcomposite-dev
+BuildRequires: libXrender-dev
+
+#BuildRequires: pkgconfig(libudev)
+#BuildRequires: ruby
+
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
 
 ##upstream patches
-
 
 %description
 %{summary}
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-Requires: qt5-qtdeclarative-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase%{?bootstrap:-bootstrap}-dev%{?_isa}
+Requires: qt5-qtdeclarative%{?bootstrap:-bootstrap}-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -127,10 +90,7 @@ BuildArch: noarch
 %patch1 -p1 -b .pluginpath
 %patch3 -p1 -b .debuginfo
 %patch4 -p1 -b .save_memory
-%if 0%{?system_angle}
-#patch5 -p1 -b .system_angle
-%patch6 -p1 -b .svn142567
-%endif
+
 %patch7 -p1 -b .aarch64
 %patch8 -p1 -b .no_rpath
 %patch9 -p1 -b .MutexLocker
@@ -143,12 +103,6 @@ mkdir Source/ThirdParty/orig
 mv Source/ThirdParty/{gtest/,qunit/} \
    Source/ThirdParty/orig/
 
-%if 0%{?system_angle}
-mv Source/ThirdParty/ANGLE/ \
-   Source/ThirdParty/orig/
-%endif
-
-
 %build
 mkdir %{_target_platform}
 pushd %{_target_platform}
@@ -160,10 +114,10 @@ pushd %{_target_platform}
 %endif
 
 # workaround, disable parallel compilation as it fails to compile in brew
-#make %{?_smp_mflags}
-make -j2
+make %{?_smp_mflags}
+#make -j2
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make %{?_smp_mflags} docs
 %endif
 popd
@@ -172,7 +126,7 @@ popd
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %endif
 
@@ -201,7 +155,7 @@ popd
 %{_qt5_libexecdir}/QtWebProcess
 %{_qt5_archdatadir}/qml/QtWebKit/
 
-%files devel
+%files dev
 %{_qt5_headerdir}/Qt*/
 %{_qt5_libdir}/libQt5*.so
 %{_qt5_libdir}/libQt5*.prl
@@ -209,7 +163,7 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5*.pc
 %{_qt5_archdatadir}/mkspecs/modules/*.pri
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %files doc
 %{_qt5_docdir}/qtwebkit.qch
 %{_qt5_docdir}/qtwebkit/

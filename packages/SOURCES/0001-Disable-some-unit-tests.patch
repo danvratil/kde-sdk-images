@@ -1,0 +1,31 @@
+From 5eacce57a3556ac39fa8aadfba35788ee29f5fb1 Mon Sep 17 00:00:00 2001
+From: Mathieu Bridon <bochecha@daitauha.fr>
+Date: Tue, 20 Jan 2015 17:59:21 +0100
+Subject: [PATCH] Disable some unit tests
+
+These tests just can't work in Koji, because they require an Internet
+access, but Koji builders don't have access to the outside world.
+---
+ tests/network/remote/remotes.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tests/network/remote/remotes.c b/tests/network/remote/remotes.c
+index 995f1d5..d9b8f5b 100644
+--- a/tests/network/remote/remotes.c
++++ b/tests/network/remote/remotes.c
+@@ -549,6 +549,7 @@ void test_network_remote_remotes__fetch_from_anonymous(void)
+ 	git_remote_free(remote);
+ }
+ 
++/* Disabling, can't work in Koji as there's no network access there
+ void test_network_remote_remotes__single_branch(void)
+ {
+ 	git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
+@@ -581,3 +582,4 @@ void test_network_remote_remotes__restricted_refspecs(void)
+ 
+ 	cl_git_fail_with(GIT_EINVALIDSPEC, git_clone(&repo, "git://github.com/libgit2/TestGitRepository", "./restrict-refspec", &opts));
+ }
++*/
+-- 
+2.1.0
+

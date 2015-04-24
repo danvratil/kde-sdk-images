@@ -1,4 +1,3 @@
-
 %global qt_module qttranslations
 
 Summary: Qt5 - QtTranslations module
@@ -8,15 +7,12 @@ Release: 1%{?dist}
 
 License: LGPLv2 with exceptions or GPLv3 with exceptions and GFDL
 Url:     http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
 BuildArch: noarch
 
-BuildRequires: qt5-qttools-devel >= %{version}
+BuildRequires: freedesktop-base-sdk
+BuildRequires: qt5-qttools-dev >= %{version}
 
 %description
 %{summary}.
@@ -27,7 +23,7 @@ BuildRequires: qt5-qttools-devel >= %{version}
 
 
 %build
-qmake-qt5
+%{qmake_qt5}
 make %{?_smp_mflags}
 
 

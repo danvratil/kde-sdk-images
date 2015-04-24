@@ -1,45 +1,40 @@
-
 %global qt_module qtsensors
-# define to build docs, need to undef this for bootstrapping
-%define docs 1
 
 Summary: Qt5 - Sensors component
-Name:    qt5-%{qt_module}
+Name:    qt5-%{qt_module}%{?bootstrap:-bootstrap}
 Version: 5.4.1
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url: http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/5.4/%{version}-%{pre}/submodules/%{qt_module}-opensource-src-%{version}-%{pre}.tar.xz
-%else
 Source0: http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{qt_module}-opensource-src-%{version}.tar.xz
-%endif
 
-BuildRequires: qt5-qtbase-devel >= %{version}
-BuildRequires: pkgconfig(Qt5Qml) >= 5.4.0
-%{?_qt5_version:Requires: qt5-qtbase%{?_isa} >= %{_qt5_version}}
+BuildRequires: freedesktop-sdk-base
+BuildRequires: qt5-qtbase%{?bootstrap:-bootstrap}-dev
+BuildRequires: qt5-qtdeclarative%{?bootstrap:-bootstrap}-dev
+
+%{?_qt5_version:Requires: qt5-qtbase%{?bootstrap:-bootstrap}%{?_isa} >= %{_qt5_version}}
 
 %description
 The Qt Sensors API provides access to sensor hardware via QML and C++
 interfaces.  The Qt Sensors API also provides a motion gesture recognition
 API for devices.
 
-%package devel
+%package dev
 Summary: Development files for %{name}
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: qt5-qtbase-devel%{?_isa}
-%description devel
+Requires: qt5-qtbase%{?bootstrap:-bootstrap}-dev%{?_isa}
+%description dev
 %{summary}.
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %package doc
 Summary: API documentation for %{name}
 License: GFDL
 Requires: %{name} = %{version}-%{release}
 # for qhelpgenerator
-BuildRequires: qt5-qttools-devel
+BuildRequires: qt5-qttools-dev
 BuildArch: noarch
 %description doc
 %{summary}.
@@ -63,7 +58,7 @@ pushd %{_target_platform}
 
 make %{?_smp_mflags}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make %{?_smp_mflags} docs
 %endif
 popd
@@ -72,7 +67,7 @@ popd
 %install
 make install INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 make install_docs INSTALL_ROOT=%{buildroot} -C %{_target_platform}
 %endif
 
@@ -101,7 +96,7 @@ popd
 %dir %{_qt5_libdir}/cmake/Qt5Sensors/
 %{_qt5_libdir}/cmake/Qt5Sensors/Qt5Sensors_*Plugin.cmake
 
-%files devel
+%files dev
 %{_qt5_headerdir}/QtSensors/
 %{_qt5_libdir}/libQt5Sensors.so
 %{_qt5_libdir}/libQt5Sensors.prl
@@ -109,7 +104,7 @@ popd
 %{_qt5_libdir}/pkgconfig/Qt5Sensors.pc
 %{_qt5_archdatadir}/mkspecs/modules/qt_lib_sensors*.pri
 
-%if 0%{?docs}
+%if ! 0%{?bootstrap}
 %files doc
 %doc LICENSE.FDL
 %{_qt5_docdir}/qtsensors.qch

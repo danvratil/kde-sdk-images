@@ -33,6 +33,8 @@ BuildRequires:  qt5-qtxmlpatterns
 
 Requires:       freedesktop-platform
 
+Requires:       glx-utils
+
 Requires:       qt5-qtbase
 Requires:       qt5-qtbase-gui
 Requires:       qt5-qtbase-mysql
