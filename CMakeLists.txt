@@ -280,13 +280,13 @@ macro(createSDK name)
     )
 endmacro()
 
-macro(createPlatform name)
+macro(createPlatform name packages)
     set(platformname "${name}-platform")
     add_custom_command(
         OUTPUT ${platformname}.tar.gz ${platformname}-rpmdb.tar.gz
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building ${platformname}"
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup_root.sh ${PLATFORM_BASE_IMAGE} > /dev/null
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh `cat ${platformname}-packages`
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh ${packages}
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
@@ -336,7 +336,7 @@ macro(parseSPECFile package specFile sourcesList depsList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo " -- done")
 endmacro()
 
-macro(generatePackageTargets platform packages)
+macro(generatePackageTargets platform packages allTargets)
     if (NOT EXISTS "${CMAKE_SOURCE_DIR}/packages/SOURCES")
         FILE(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/packages/SOURCES")
     endif()
@@ -355,7 +355,7 @@ macro(generatePackageTargets platform packages)
     # ${package} (meta target)
     #  '-- ${package}-build (build)
     #       '-- ${package}-sources (get sources)
-    set(all_destFiles "")
+    set(allDestFiles "")
     foreach(package ${packages})
         add_custom_target(${package})
 
@@ -368,9 +368,9 @@ macro(generatePackageTargets platform packages)
             get_filename_component(fileName ${source} NAME)
             set(destFile "${CMAKE_SOURCE_DIR}/packages/SOURCES/${fileName}")
             LIST(APPEND sourceFiles ${destFile})
-            LIST(FIND all_destFiles ${destFile} found)
+            LIST(FIND allDestFiles ${destFile} found)
             if (${found} EQUAL -1)
-                LIST(APPEND all_destFiles ${destFile})
+                LIST(APPEND allDestFiles ${destFile})
                 add_custom_command(
                     OUTPUT ${destFile}
                     COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Downloading source for ${package}\"
@@ -403,6 +403,7 @@ macro(generatePackageTargets platform packages)
         set(targets "")
         foreach(tgt ${${package}_targets})
             LIST(APPEND targets ${${tgt}_target})
+            LIST(APPEND ${allTargets} ${${tgt}_target})
         endforeach()
 
         add_custom_command(
@@ -425,7 +426,7 @@ macro(generatePackageTargets platform packages)
         add_dependencies(${package} ${package}-build)
 
     endforeach()
-    unset(all_destFiles)
+    unset(allDestFiles)
 endmacro()
 
 macro(createBaseImages)
@@ -453,16 +454,18 @@ endmacro()
 # it will generate the ${SDK_BASE_IMAGE} and ${PLATFORM_BASE_IMAGE} files
 createBaseImages()
 
-generatePackageTargets("freedesktop" "${freedesktop_PACKAGES}")
-createPlatform(freedesktop)
+set(allPackages)
+
+generatePackageTargets("freedesktop" "${freedesktop_PACKAGES}" allPackages)
+createPlatform(freedesktop ${allPackages})
 createSDK(freedesktop)
 
-generatePackageTargets("qt5" "${qt5_PACKAGES}")
-createPlatform(qt5)
+generatePackageTargets("qt5" "${qt5_PACKAGES}" allPackages)
+createPlatform(qt5 ${allPackages})
 createSDK(qt5)
 
-generatePackageTargets("kf5" "${kf5_PACKAGES}")
-createPlatform(kf5)
+generatePackageTargets("kf5" "${kf5_PACKAGES}" allPackages)
+createPlatform(kf5 ${allPackages})
 createSDK(kf5)
 
 add_custom_target(kde-sdk-images ALL
