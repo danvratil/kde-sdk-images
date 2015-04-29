@@ -18,7 +18,6 @@ Requires:       dbusmenu-qt5-dev
 Requires:       sgml-common
 Requires:       docbook-dtds
 Requires:       docbook-style-xsl
-Requires:       xz-libs-dev
 Requires:       giflib-dev
 Requires:       ilmbase-dev
 Requires:       OpenEXR-dev
@@ -31,7 +30,7 @@ Requires:       kf5-rpm-macros
 Requires:       kf5-attica-dev
 Requires:       kf5-frameworkintegration-dev
 Requires:       kf5-kactivities-dev
-Requires:       kf5-kapidox-dev
+Requires:       kf5-kapidox
 Requires:       kf5-karchive-dev
 Requires:       kf5-kauth-dev
 Requires:       kf5-kbookmarks-dev
@@ -82,7 +81,7 @@ Requires:       kf5-ktexteditor-dev
 Requires:       kf5-ktextwidgets-dev
 Requires:       kf5-kunitconversion-dev
 Requires:       kf5-kwallet-dev
-Requires:       kf5-kwidgetaddons-dev
+Requires:       kf5-kwidgetsaddons-dev
 Requires:       kf5-kwindowsystem-dev
 Requires:       kf5-kxmlgui-dev
 Requires:       kf5-kxmlrpcclient-dev

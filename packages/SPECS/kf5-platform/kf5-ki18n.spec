@@ -36,7 +36,7 @@ The %{name}-dev package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%autosetup -n %{framework}-%{version} -p1
+%setup -n %{framework}-%{version}
 
 %build
 mkdir -p %{_target_platform}

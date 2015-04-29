@@ -1,3 +1,5 @@
+%include %{_rpmconfigdir}/macros.python
+
 %global framework kapidox
 
 Name:           kf5-%{framework}
@@ -49,8 +51,8 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 
 %files
 %doc LICENSE
-%{python2_sitelib}/kapidox
-%{python2_sitelib}/kapidox-%{version}-py2.7.egg-info
+%{py_sitedir}/kapidox
+%{py_sitedir}/kapidox-%{version}-py2.7.egg-info
 %{_kf5_bindir}/kgenapidox
 %{_kf5_bindir}/depdiagram-prepare
 %{_kf5_bindir}/depdiagram-generate

@@ -1,5 +1,8 @@
 %global framework kauth
 
+# no systemd -> no polkit -> no plkit-qt5 - use dummy backend
+%define build_polkit 0
+
 Name:           kf5-%{framework}
 Version:        5.9.0
 Release:        1%{?dist}
@@ -17,7 +20,9 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
+%if 0%{?build_polkit}
 BuildRequires:  polkit-qt5-1-dev
+%endif
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
@@ -67,7 +72,9 @@ make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %{_kf5_sysconfdir}/dbus-1/system.d/org.kde.kf5auth.conf
 %{_kf5_qtplugindir}/kauth/
 %{_kf5_datadir}/kf5/kauth/
+%if 0%{?build_polkit}
 %{_kf5_libexecdir}/kauth/kauth-policy-gen
+%endif
 
 %files dev
 %{_kf5_includedir}/kauth_version.h

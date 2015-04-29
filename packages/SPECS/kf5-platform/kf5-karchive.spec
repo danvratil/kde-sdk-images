@@ -17,10 +17,6 @@ URL:            http://www.kde.org
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-BuildRequires:  zlib-dev
-BuildRequires:  bzip2-dev
-BuildRequires:  xz-dev
-
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
 BuildRequires:  qt5-qtbase-dev

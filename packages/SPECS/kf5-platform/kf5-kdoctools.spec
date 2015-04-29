@@ -26,8 +26,6 @@ BuildRequires:  qt5-qtbase-dev
 BuildRequires:  kf5-ki18n-dev
 BuildRequires:  kf5-karchive-dev
 
-BuildRequires:  perl(URI::Escape)
-
 Requires:       docbook-dtds
 Requires:       docbook-style-xsl
 Requires:       kf5-filesystem
@@ -41,7 +39,6 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 Provides:       kf5-kdoctools-static = %{version}-%{release}
 Requires:       qt5-qtbase-dev
 Requires:       kf5-karchive-dev
-Requires:       perl(URI::Escape)
 
 %description    dev
 The %{name}-dev package contains libraries and header files for
@@ -58,6 +55,11 @@ Documentation and user help for %{name}.
 %setup -q -n %{framework}-%{version}
 
 %build
+# Get rid of Perl dependencies. It's impossible to get it work
+# in this lousy runtime
+echo -e "function(kdoctools_encode_uri _original_uri)\nendfunction()" > cmake/uriencode.cmake
+
+
 mkdir -p %{_target_platform}
 pushd %{_target_platform}
 %{cmake_kf5} ..

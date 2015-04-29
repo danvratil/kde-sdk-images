@@ -17,9 +17,6 @@ URL:            https://projects.kde.org/projects/frameworks/kpeople
 %endif
 Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{framework}-%{version}.tar.xz
 
-# use non-conflicting libkpeople5 translation catalog
-Patch1: kpeople-catalog.patch
-
 ## Once ktp-kf5 stack is ready, can consider Obsoletes
 #Obsoletes: libkpeople < 1.0
 
@@ -53,15 +50,6 @@ developing applications that use %{name}.
 
 %prep
 %setup -q -n %{framework}-%{version}
-
-%patch1 -p1 -b .catalog
-
-for po in po/*/libkpeople.po ; do
-pushd $(dirname $po)
-mv libkpeople.po libkpeople5.po
-popd
-done
-
 
 %build
 mkdir %{_target_platform}

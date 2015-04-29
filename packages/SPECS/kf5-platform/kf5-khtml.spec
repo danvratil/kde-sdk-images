@@ -24,7 +24,7 @@ BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
 BuildRequires:  qt5-qtbase-dev
 BuildRequires:  qt5-qtx11extras-dev
-BuildRequires:  phonon-qt5-dev
+BuildRequires:  phonon-dev
 
 BuildRequires:  kf5-karchive-dev
 BuildRequires:  kf5-kcodecs-dev

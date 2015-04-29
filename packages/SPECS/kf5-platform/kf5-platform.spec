@@ -15,7 +15,6 @@ BuildRequires:  dbusmenu-qt5-dev
 BuildRequires:  sgml-common
 BuildRequires:  docbook-dtds
 BuildRequires:  docbook-style-xsl
-BuildRequires:  xz-libs-dev
 BuildRequires:  giflib-dev
 BuildRequires:  ilmbase-dev
 BuildRequires:  OpenEXR-dev
@@ -28,7 +27,7 @@ BuildRequires:  kf5-rpm-macros
 BuildRequires:  kf5-attica-dev
 BuildRequires:  kf5-frameworkintegration-dev
 BuildRequires:  kf5-kactivities-dev
-BuildRequires:  kf5-kapidox-dev
+BuildRequires:  kf5-kapidox
 BuildRequires:  kf5-karchive-dev
 BuildRequires:  kf5-kauth-dev
 BuildRequires:  kf5-kbookmarks-dev
@@ -79,7 +78,7 @@ BuildRequires:  kf5-ktexteditor-dev
 BuildRequires:  kf5-ktextwidgets-dev
 BuildRequires:  kf5-kunitconversion-dev
 BuildRequires:  kf5-kwallet-dev
-BuildRequires:  kf5-kwidgetaddons-dev
+BuildRequires:  kf5-kwidgetsaddons-dev
 BuildRequires:  kf5-kwindowsystem-dev
 BuildRequires:  kf5-kxmlgui-dev
 BuildRequires:  kf5-kxmlrpcclient-dev
@@ -157,12 +156,12 @@ Requires:       kf5-ktexteditor
 Requires:       kf5-ktextwidgets
 Requires:       kf5-kunitconversion
 Requires:       kf5-kwallet
-Requires:       kf5-kwidgetaddons
+Requires:       kf5-kwidgetsaddons
 Requires:       kf5-kwindowsystem
 Requires:       kf5-kxmlgui
 Requires:       kf5-kxmlrpcclient
 #Requires:       kf5-modemmanager-qt
-#Requires:      kf5-networkmanager-qt
+#Requires:       kf5-networkmanager-qt
 Requires:       kf5-plasma
 Requires:       kf5-solid
 Requires:       kf5-sonnet

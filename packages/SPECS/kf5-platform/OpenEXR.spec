@@ -7,9 +7,6 @@ Release: 1%{?dist}
 License: BSD
 URL:	 http://www.openexr.com/
 Source0: http://download.savannah.nongnu.org/releases/openexr/openexr-%{version}.tar.gz
-# fix tests for big endian arches
-# https://github.com/openexr/openexr/issues/81
-Patch0:  openexr-2.1.0-bigendian.patch
 
 Obsoletes: openexr < %{version}-%{release}
 Provides:  openexr = %{version}-%{release}
@@ -17,9 +14,8 @@ Provides:  openexr = %{version}-%{release}
 # https://github.com/openexr/openexr/issues/130
 BuildConflicts: OpenEXR-dev < 2.2.0
 
-BuildRequires: ilmbase-dev >= %{version}
+BuildRequires: ilmbase-dev
 BuildRequires: zlib-dev
-BuildRequires: pkgconfig
 
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -45,7 +41,6 @@ Summary: %{name} runtime libraries
 
 %prep
 %setup -q -n openexr-%{version}
-%patch0 -p1 -b .bigendian
 
 
 %build

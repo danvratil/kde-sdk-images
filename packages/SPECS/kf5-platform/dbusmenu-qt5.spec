@@ -17,7 +17,7 @@ URL:            https://launchpad.net/libdbusmenu-qt/
 Source0:        libdbusmenu-qt5-%{version}-%{snapshot}bzr.tar.bz2
 
 BuildRequires:  qt5-sdk-base
-BuildRequires:  qt5-qtbase-devel
+BuildRequires:  qt5-qtbase-dev
 
 %description
 This library provides a Qt implementation of the DBusMenu protocol.
@@ -41,10 +41,11 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %build
 mkdir -p %{_target_platform}
 pushd %{_target_platform}
+# We don't have doxygen -> no docs
 %{cmake} \
         -DUSE_QT4:BOOL=FALSE \
         -DUSE_QT5:BOOL=TRUE \
-        -DWITH_DOC:BOOL=TRUE \
+        -DWITH_DOC:BOOL=FALSE \
         ..
 popd
 
@@ -77,7 +78,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc COPYING README
 %{_libdir}/libdbusmenu-qt5.so.2*
-%{_datadir}/doc/libdbusmenu-qt5-doc/
+#%{_datadir}/doc/libdbusmenu-qt5-doc/
 
 %files dev
 %defattr(-,root,root,-)

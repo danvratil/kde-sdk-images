@@ -8,6 +8,9 @@ URL:            http://www.kde.org
 
 Source0:        macros.kf5
 
+Requires:       kf5-filesystem
+Requires:       kf5-rpm-macros
+
 %description
 Filesystem and RPM macros for KDE Frameworks 5
 
@@ -33,6 +36,8 @@ mkdir -p %{buildroot}%{_sysconfdir}/xdg/plasma-workspace/{env,shutdown}
 mkdir -p %{buildroot}%{_rpmconfigdir}/macros.d/
 install -pm644 %{_sourcedir}/macros.kf5 %{buildroot}%{_rpmconfigdir}/macros.d
 
+%files
+# Empty package
 
 %files filesystem
 %{_sysconfdir}/xdg/plasma-workspace/

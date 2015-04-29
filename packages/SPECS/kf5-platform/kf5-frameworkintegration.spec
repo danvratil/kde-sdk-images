@@ -66,7 +66,9 @@ developing applications that use %{name}.
 
 
 %prep
-%autosetup -p1 -n %{framework}-%{version}
+%setup -n %{framework}-%{version}
+
+%patch0 -p1 -b .dialogfix
 
 %build
 mkdir -p %{_target_platform}

@@ -63,6 +63,9 @@ developing applications that use %{name}.
 %setup -q -n %{framework}-%{version}
 
 %build
+
+sed -i "s/TYPE REQUIRED/TYPE OPTIONAL/" CMakeLists.txt
+
 mkdir -p %{_target_platform}
 pushd %{_target_platform}
 %{cmake_kf5} ..

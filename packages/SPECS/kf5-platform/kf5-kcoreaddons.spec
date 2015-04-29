@@ -22,7 +22,10 @@ BuildRequires:  extra-cmake-modules
 BuildRequires:  qt5-qtbase-dev
 BuildRequires:  qt5-qttools-dev
 
+BuildRequires:  shared-mime-info
+
 Requires:       kf5-filesystem
+Requires:       shared-mime-info
 
 %description
 KCoreAddons provides classes built on top of QtCore to perform various tasks

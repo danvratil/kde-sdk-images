@@ -192,7 +192,7 @@ set(kf5_PACKAGES
     ilmbase
     libupnp
     OpenEXR
-    xz
+    boost
 
     extra-cmake-modules
     kf5

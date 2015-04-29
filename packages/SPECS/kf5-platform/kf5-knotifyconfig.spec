@@ -19,7 +19,7 @@ Source0:        http://download.kde.org/%{stable}/frameworks/%{versiondir}/%{fra
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  phonon-qt5-dev
+BuildRequires:  phonon-dev
 BuildRequires:  qt5-qtbase-dev
 BuildRequires:  kf5-kxmlgui-dev
 BuildRequires:  kf5-kwidgetsaddons-dev

@@ -23,7 +23,7 @@ BuildRequires:  libXrender-dev
 BuildRequires:  libXScrnSaver-dev
 BuildRequires:  libXext-dev
 BuildRequires:  libSM-dev
-BuildRequires:  libGL-dev
+BuildRequires:  mesa-libGL-dev
 
 BuildRequires:  qt5-qtbase-dev
 BuildRequires:  qt5-qtx11extras-dev

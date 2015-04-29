@@ -136,6 +136,17 @@ KIONTLM provides support for NTLM authentication mechanism in KIO
 %setup -q -n %{framework}-%{version}
 
 %build
+
+# Yocto base SDK is missing the no-SOVERSION symlink,
+# so we must compensate for that in order to make KIO
+# compile.
+#
+# YES - we are actually making a symlink outside rpmbuild
+# buildroot, but it does not matter, because the build env
+# will be wiped anyway.
+ln -s libcom_err.so.2 /lib/libcom_err.so
+
+
 mkdir -p %{_target_platform}
 pushd %{_target_platform}
 %{cmake_kf5} ..

@@ -21,7 +21,7 @@ BuildRequires:  libX11-dev
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
-BuildRequires:  phonon-qt5-dev
+BuildRequires:  phonon-dev
 BuildRequires:  qt5-qtbase-dev
 BuildRequires:  qt5-qtx11extras-dev
 BuildRequires:  qt5-qttools-dev

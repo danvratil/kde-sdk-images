@@ -103,6 +103,10 @@ developing applications that use %{name}.
 
 
 %build
+# Get rid of Perl dependencies. It's impossible to get it work
+# in this lousy runtime
+echo -e "function(kdelibs4support_encode_uri _original_uri)\nendfunction()" > cmake/uriencode.cmake
+
 mkdir %{_target_platform}
 pushd %{_target_platform}
 # Set absolute BIN_INSTALL_DIR, otherwise CMake will complain about mixed use of
