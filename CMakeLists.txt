@@ -450,7 +450,7 @@ endmacro()
 function(commit name version)
     function(_commit type uri name version)
         add_custom_command(OUTPUT ${uri}.repo
-                           COMMAND if [ ! -d repo ]\; then ostree init --mode=archive-z2 --repo=repo else "Using existing repo"\; fi
+                           COMMAND if [ ! -d repo ]\; then ostree init --mode=archive-z2 --repo=repo else \"Using existing repo\"\; fi
                            COMMAND ${CMAKE_SOURCE_DIR}/commit.sh repo ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz metadata.${name}.${type} ${uri} ${BUILD_ARCH} ${version}
                            COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_SOURCE_DIR}/${uri}.repo
                            DEPENDS ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz
