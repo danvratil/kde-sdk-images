@@ -447,6 +447,34 @@ macro(createBaseImages)
 
 endmacro()
 
+function(commit name version)
+    function(_commit type uri name version)
+        add_custom_command(OUTPUT ${uri}.repo
+                           COMMAND if [ ! -d repo ]\; then ostree init --mode=archive-z2 --repo=repo else "Using existing repo"\; fi
+                           COMMAND ${CMAKE_SOURCE_DIR}/commit.sh repo ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz metadata.${name}.${type} ${uri} ${BUILD_ARCH} ${version}
+                           COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_SOURCE_DIR}/${uri}.repo
+                           DEPENDS ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz
+        )
+    endfunction()
+
+    STRING(TOLOWER ${name} lcname)
+    _commit(platform org.kde.${name}.Platform ${lcname} ${version})
+    _commit(sdk org.kde.${name}.Sdk ${lcname} ${version})
+endfunction()
+
+function(untag name version)
+    function(_untag type uri version)
+        add_custom_command(OUTPUT ${uri}.repo.untagged
+                           COMMAND ${CMAKE_SOURCE_DIR}/untag.sh repo ${uri} ${BUILD_ARCH} ${version}
+                           COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_SOURCE_DIR}/${uri}.repo.untagged
+                           DEPENDS ${uri}.repo
+        )
+    endfunction()
+
+    STRING(TOLOWER ${name} lcname)
+    _untag(platform org.kde.${name}.Platform ${version})
+    _untag(sdk org.kde.${name}.Sdk ${version})
+endfunction()
 
 ######### Build targets ##########
 
@@ -477,3 +505,15 @@ add_custom_target(kde-sdk-images ALL
             kf5-sdk-rpmdb.tar.gz
 )
 
+commit(Qt5 ${QT5_VERSION})
+commit(KF5 ${KF5_VERSION})
+
+#untag(Qt5 ${QT5_VERSION})
+#untag(KF5 ${KF5_VERSION})
+
+add_custom_target(repo ALL
+    DEPENDS org.kde.Qt5.Platform.repo
+            org.kde.Qt5.Sdk.repo
+            org.kde.KF5.Platform.repo
+            org.kde.KF5.Sdk.repo
+)
