@@ -15,8 +15,8 @@ if [ "x${GPG_HOME}" != "x" ]; then
 fi
 
 for ORIG_BRANCH in `(cd ${REPO}/refs/heads/; echo  runtime/${NAME}${TAG}*/${ARCH}/${VERSION})`; do
-    export NEW_BRANCH=`echo ${ORIG_BRANCH} | sed s/${TAG}//`;
-    export COMMITMSG=`ostree show --repo=${REPO} ${ORIG_BRANCH} | tail -n +4 | head -n 1 | sed -e 's/^[ \t]*//'`
-
-    ostree commit ${COMMIT_ARGS} --tree=ref=${ORIG_BRANCH} -b ${NEW_BRANCH} -s "${COMMITMSG}"
+    NEW_BRANCH=`echo ${ORIG_BRANCH} | sed s/${TAG}//`;
+    COMMITMSG=`ostree show --repo=${REPO} ${ORIG_BRANCH} | tail -n +4 | head -n 1 | sed -e 's/^[ \t]*//'`
+    echo "Untag - branch: ${NEW_BRANCH}, message: ${COMMITMSG}"
+    ostree commit ${COMMIT_ARGS} --tree=ref=${ORIG_BRANCH} -b "${NEW_BRANCH}" -s "${COMMITMSG}"
 done
