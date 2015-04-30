@@ -46,6 +46,7 @@ Requires: cairo
 Requires: cairo-gobject
 Requires: dbus
 Requires: dbus-libs
+Requires: dbus-x11
 Requires: dejavu-fonts
 Requires: desktop-file-utils
 Requires: fontconfig
