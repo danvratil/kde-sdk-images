@@ -281,12 +281,28 @@ macro(createSDK name)
 endmacro()
 
 macro(createPlatform name packages)
+    set(installablePkgs)
+    foreach (package ${packages})
+        set(exclude "FALSE")
+        foreach (match IN ITEMS "-dev-" "-debuginfo-" "-sdk-" "-static-" "-bootstrap-")
+            STRING(FIND "${package}" "${match}" pos REVERSE)
+            if (${pos} GREATER -1)
+                set(exclude "TRUE")
+            endif()
+        endforeach()
+        if ("${exclude}" STREQUAL "FALSE")
+            LIST(APPEND installablePkgs ${package})
+        endif()
+        unset(exclude)
+    endforeach()
+    #STRING(REPLACE ";" " " installablePkgs ${installablePkgs})
+    #message(STATUS ${installablePkgs})
     set(platformname "${name}-platform")
     add_custom_command(
         OUTPUT ${platformname}.tar.gz ${platformname}-rpmdb.tar.gz
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building ${platformname}"
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup_root.sh ${PLATFORM_BASE_IMAGE} > /dev/null
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh ${packages}
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh --nodeps ${installablePkgs}
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
@@ -485,15 +501,15 @@ createBaseImages()
 set(allPackages)
 
 generatePackageTargets("freedesktop" "${freedesktop_PACKAGES}" allPackages)
-createPlatform(freedesktop ${allPackages})
+createPlatform(freedesktop "${allPackages}")
 createSDK(freedesktop)
 
 generatePackageTargets("qt5" "${qt5_PACKAGES}" allPackages)
-createPlatform(qt5 ${allPackages})
+createPlatform(qt5 "${allPackages}")
 createSDK(qt5)
 
 generatePackageTargets("kf5" "${kf5_PACKAGES}" allPackages)
-createPlatform(kf5 ${allPackages})
+createPlatform(kf5 "${allPackages}")
 createSDK(kf5)
 
 add_custom_target(kde-sdk-images ALL
