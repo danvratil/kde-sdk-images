@@ -28,7 +28,7 @@ BuildRequires:  qt5-qttranslations
 #BuildRequires:  qt5-qtwayland-dev
 BuildRequires:  qt5-qtwebkit-dev
 BuildRequires:  qt5-qtx11extras-dev
-BuildRequires:  qt5-qtxmlpatterns
+BuildRequires:  qt5-qtxmlpatterns-dev
 BuildRequires:  phonon-dev
 
 

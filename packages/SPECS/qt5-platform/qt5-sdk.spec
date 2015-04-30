@@ -35,7 +35,7 @@ Requires:  qt5-qttranslations
 #Requires:  qt5-qtwayland-dev
 Requires:  qt5-qtwebkit-dev
 Requires:  qt5-qtx11extras-dev
-Requires:  qt5-qtxmlpatterns
+Requires:  qt5-qtxmlpatterns-dev
 
 Requires:  phonon-dev
 
