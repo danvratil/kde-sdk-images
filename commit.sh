@@ -10,6 +10,11 @@ VERSION=$7
 
 REV=`git rev-parse HEAD`
 
+cat "Build of ${REV}" > /tmp/sdk-commit-message
+nano /tmp/sdk-commit-message
+COMMITMSG=`cat /tmp/sdk-commit-message`
+rm /tmp/sdk-commit-message
+
 rm -rf build/commit
 mkdir -p build/commit
 rm -rf build/commit-locales
@@ -49,12 +54,12 @@ for F in build/commit/files/lib/locale/*; do
 done
 
 echo "commiting runtime/${NAME}/${ARCH}/${VERSION}"
-ostree commit ${COMMIT_ARGS} --branch=runtime/${NAME}/${ARCH}/${VERSION}  -s "build of ${REV}" build/commit
+ostree commit ${COMMIT_ARGS} --branch=runtime/${NAME}/${ARCH}/${VERSION}  -s "${COMMITMSG}" build/commit
 
 for F in build/commit-locales/*; do
     LOCALE=`basename $F`
     echo "commiting runtime/${NAME}.Locale.$LOCALE/${ARCH}/${VERSION}"
-    ostree commit ${COMMIT_ARGS} --branch=runtime/${NAME}.Locale.$LOCALE/${ARCH}/${VERSION} -s "build of ${REV}" $F
+    ostree commit ${COMMIT_ARGS} --branch=runtime/${NAME}.Locale.$LOCALE/${ARCH}/${VERSION} -s "${COMMITMSG}" $F
 done
 
 rm -rf build/commit
@@ -62,7 +67,7 @@ mkdir -p build/commit
 echo "extracting ${TAR_VAR}"
 tar xf ${TAR_VAR} -C build/commit
 echo "commiting runtime/${NAME}.Var/${ARCH}/${VERSION}"
-ostree commit ${COMMIT_ARGS} --branch=runtime/${NAME}.Var/${ARCH}/${VERSION}  -s "build of ${REV}" build/commit
+ostree commit ${COMMIT_ARGS} --branch=runtime/${NAME}.Var/${ARCH}/${VERSION}  -s "${COMMITMSG}" build/commit
 
 if [ "x${DELTAS}" != "x" ]; then
     echo "commiting generating deltas"
