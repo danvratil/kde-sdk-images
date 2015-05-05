@@ -11,3 +11,6 @@ directory=share/zoneinfo
 [Extension org.kde.KF5.Platform.Locale]
 directory=share/runtime/locale
 subdirectories=true
+
+[Environment]
+permittedEnvVars=QT_LOGGING_RULES,QT_LOGGING_CONF,QT_MESSAGE_PATTERN,QT_HASH_SEED,QT_DEBUG_PLUGINS,QT_STYLE_OVERRIDE 
