@@ -34,6 +34,24 @@ BuildRequires:  phonon-dev
 
 Requires:       freedesktop-platform
 
+Requires:       alsa-lib
+Requires:       at-spi2-core
+Requires:       clucene-core
+Requires:       glew
+Requires:       libGLEW
+Requires:       libGLEWmx
+Requires:       libmng
+Requires:       mesa-libGLU
+Requires:       openal-soft
+Requires:       pcre16
+Requires:       pcre32
+Requires:       portaudio
+Requires:       xcb-util
+Requires:       xcb-util-image
+Requires:       xcb-util-keysyms
+Requires:       xcb-util-renderutil
+Requires:       xcb-util-wm
+
 Requires:       glx-utils
 
 Requires:       qt5-qtbase
