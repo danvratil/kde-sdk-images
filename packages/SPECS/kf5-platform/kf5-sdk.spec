@@ -1,6 +1,6 @@
 Name:           kf5-sdk
 Version:        0.1
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        KDE Frameworks 5 SDK
 
 License:        Various
@@ -92,6 +92,9 @@ Requires:       kf5-solid-dev
 Requires:       kf5-sonnet-dev
 Requires:       kf5-threadweaver-dev
 
+Requires:       breeze
+Requires:       breeze-icon-theme
+Requires:       oxygen-icon-theme
 
 %description
 Meta package for KDE SDK dependencies
@@ -105,5 +108,11 @@ Meta package for KDE SDK dependencies
 %files
 
 %changelog
+* Wed May 06 2015 Daniel Vrátil <dvratil@redhat.com>
+- add oxygen
+
+* Tue May 05 2015 Daniel Vrátil <dvratil@redhat.com>
+- add breeze
+
 * Tue Apr 07 2015 Daniel Vrátil <dvratil@redhat.com>
 - Initial version

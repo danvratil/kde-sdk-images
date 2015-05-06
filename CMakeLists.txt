@@ -261,6 +261,9 @@ set(kf5_PACKAGES
     kf5-solid
     kf5-sonnet
     kf5-threadweaver
+
+    breeze
+    oxygen-icon-theme
 )
 
 
