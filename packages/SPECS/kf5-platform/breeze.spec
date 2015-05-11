@@ -1,6 +1,6 @@
 Name:           breeze
 Version:        5.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Artwork, styles and assets for the Breeze visual style for the Plasma Desktop
 
 License:        GPLv2+
@@ -13,6 +13,9 @@ URL:            https://projects.kde.org/projects/kde/workspace/breeze
 %global stable stable
 %endif
 Source0:        http://download.kde.org/%{stable}/plasma/%{version}/%{name}-%{version}.tar.xz
+
+Source10:       breeze-metadata.desktop
+Source11:       breeze-defaults
 
 BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
@@ -70,6 +73,13 @@ make %{?_smp_mflags} -C %{_target_platform}
 make install/fast DESTDIR=%{buildroot} -C %{_target_platform}
 %find_lang breeze --with-qt --all-name
 
+# Install breeze look-and-feel metadata so that frameworkintegration
+# plugin picks it up otherwise it falls back to Oxygen
+mkdir -p %{buildroot}/%{_datadir}/plasma/look-and-feel/org.kde.breeze.desktop/contents
+install %{SOURCE10} %{buildroot}%{_datadir}/plasma/look-and-feel/org.kde.breeze.desktop/metadata.desktop
+install %{SOURCE11} %{buildroot}%{_datadir}/plasma/look-and-feel/org.kde.breeze.desktop/contents/defaults
+
+
 %post
 touch --no-create %{_datadir}/icons/hicolor &> /dev/null || :
 
@@ -95,6 +105,7 @@ fi
 %{_bindir}/breeze-settings5
 %{_datadir}/icons/hicolor/scalable/apps/breeze-settings.svgz
 %{_kf5_datadir}/kservices5/breezestyleconfig.desktop
+%{_kf5_datadir}/plasma/look-and-feel/org.kde.breeze.desktop
 
 %files common -f breeze.lang
 %{_datadir}/color-schemes/*.colors
@@ -120,5 +131,8 @@ fi
 %{_datadir}/icons/Breeze_Snow
 
 %changelog
+* Wed May 06 2015 Daniel Vrátil <dvratil@redhat.com> - 5.3.0-2
+- add look-and-feel metadata
+
 * Tue May 05 2015 Daniel Vrátil <dvratil@redhat.com> - 5.3.0-1
 - Initial version (forked from Fedora)
