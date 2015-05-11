@@ -15,6 +15,7 @@ URL:            http://www.kde.org/
 Source0:        http://download.kde.org/%{stable}/applications/%{version}/src/oxygen-icons-%{version}.tar.xz
 BuildArch:      noarch
 
+BuildRequires:  kf5-rpm-macros
 BuildRequires:  extra-cmake-modules
 BuildRequires:  cmake
 
