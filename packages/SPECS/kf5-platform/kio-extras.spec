@@ -75,12 +75,12 @@ BuildArch:      noarch
 %setup -q -n %{name}-%{version}
 
 # temporary
-%patch1 -p1 -b .mtp_catalog
-for po in po/*/kio_mtp.po ; do
-pushd $(dirname $po)
-mv kio_mtp.po kio_mtp5.po
-popd
-done
+#%patch1 -p1 -b .mtp_catalog
+#for po in po/*/kio_mtp.po ; do
+#pushd $(dirname $po)
+#mv kio_mtp.po kio_mtp5.po
+#popd
+#done
 
 
 %build
@@ -127,7 +127,7 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_kf5_plugindir}/kio/nfs.so
 %{_kf5_plugindir}/kio/recentdocuments.so
 %{_kf5_plugindir}/kio/settings.so
-%{_kf5_plugindir}/kio/sftp.so
+#%{_kf5_plugindir}/kio/sftp.so
 #%{_kf5_plugindir}/kio/smb.so
 %{_kf5_plugindir}/kio/thumbnail.so
 %{_kf5_qtplugindir}/kio_about.so
@@ -149,13 +149,13 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %dir %{_datadir}/konqsidebartng/virtual_folders/
 %dir %{_datadir}/konqsidebartng/virtual_folders/remote/
 %{_datadir}/konqsidebartng/virtual_folders/remote/virtualfolder_network.desktop
-%dir %{_datadir}/konqueror/
-%dir %{_datadir}/konqueror/dirtree/
-%dir %{_datadir}/konqueror/dirtree/remote/
-%{_datadir}/konqueror/dirtree/remote/mtp-network.desktop
-%{_datadir}/konqueror/dirtree/remote/smb-network.desktop
+#%dir %{_datadir}/konqueror/
+#%dir %{_datadir}/konqueror/dirtree/
+#%dir %{_datadir}/konqueror/dirtree/remote/
+#%{_datadir}/konqueror/dirtree/remote/mtp-network.desktop
+#%{_datadir}/konqueror/dirtree/remote/smb-network.desktop
 %{_datadir}/remoteview/
-%{_kf5_datadir}/solid/actions/solid_mtp.desktop
+#%{_kf5_datadir}/solid/actions/solid_mtp.desktop
 %{_kf5_datadir}/kservices5/*.protocol
 %{_kf5_datadir}/kservices5/*.desktop
 %{_kf5_datadir}/kservices5/kded/*.desktop

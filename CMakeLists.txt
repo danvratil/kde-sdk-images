@@ -264,6 +264,7 @@ set(kf5_PACKAGES
 
     breeze
     oxygen-icon-theme
+    kio-extras
 )
 
 
