@@ -34,4 +34,13 @@ freedesktop-platform-rpmdb.tar.gz
 freedesktop-platform.tar.gz
 freedesktop-sdk-rpmdb.tar.gz
 freedesktop-sdk.tar.gz
+qt5-platform-rpmdb.tar.gz
+qt5-platform.tar.gz
+qt5-sdk-rpmdb.tar.gz
+qt5-sdk.tar.gz
+kf5-platform-rpmdb.tar.gz
+kf5-platform.tar.gz
+kf5-sdk-rpmdb.tar.gz
+kf5-sdk.tar.gz
 *~
+*.repo
