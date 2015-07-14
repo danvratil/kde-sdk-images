@@ -269,7 +269,7 @@ set(kf5_PACKAGES
 
 
 ######## Custom Macros #########
-macro(createSDK name)
+function(createSDK name)
     set(sdkname "${name}-sdk")
     add_custom_command(
         OUTPUT ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
@@ -278,13 +278,16 @@ macro(createSDK name)
         COMMAND ${CMAKE_COMMAND} -E remove -f ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${sdkname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${sdkname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
+        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/root
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/var
+        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
         DEPENDS ${${sdkname}_target} ${SDK_BASE_IMAGE}
         VERBATIM
     )
-endmacro()
+endfunction()
 
-macro(createPlatform name packages)
+function(createPlatform name packages)
     set(installablePkgs)
     foreach (package ${packages})
         set(exclude "FALSE")
@@ -309,12 +312,15 @@ macro(createPlatform name packages)
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh --nodeps ${installablePkgs}
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/clear_root.sh
+        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/root
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/var
+        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
         DEPENDS ${${platformname}_target} ${PLATFORM_BASE_IMAGE}
     )
-endmacro()
+endfunction()
 
-macro(parseSPECFile package specFile sourcesList depsList)
+function(parseSPECFile package specFile sourcesList depsList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo_append "-- Parsing SPEC file for package ${package}")
     # The path must be relative - we use it as both target name and actual file path,
     # but absolute paths differ here and in chroot in build.sh
@@ -353,10 +359,13 @@ macro(parseSPECFile package specFile sourcesList depsList)
         endif()
     endforeach()
 
-    execute_process(COMMAND ${CMAKE_COMMAND} -E echo " -- done")
-endmacro()
+    set(sourcesList ${sourcesList} PARENT_SCOPE)
+    set(depsList ${depsList} PARENT_SCOPE)
 
-macro(generatePackageTargets platform packages allTargets)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E echo " -- done")
+endfunction()
+
+function(generatePackageTargets platform packages allTargets)
     if (NOT EXISTS "${CMAKE_SOURCE_DIR}/packages/SOURCES")
         FILE(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/packages/SOURCES")
     endif()
@@ -436,7 +445,8 @@ macro(generatePackageTargets platform packages allTargets)
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Building ...\"
             COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile} | tee packages/LOGS/${package}.build
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
-            COMMAND ${CMAKE_SOURCE_DIR}/clear_root.sh
+            COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/root
+            COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/var
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
             DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${depsPackages}
         )
@@ -447,9 +457,11 @@ macro(generatePackageTargets platform packages allTargets)
 
     endforeach()
     unset(allDestFiles)
-endmacro()
 
-macro(createBaseImages)
+    set(allTargets ${allTargets} PARENT_SCOPE)
+endfunction()
+
+function(createBaseImages)
     add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/Makefile
                        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Cloning freedesktop-sdk-base"
                        COMMAND git clone git://git.gnome.org/freedesktop-sdk-base
@@ -465,7 +477,7 @@ macro(createBaseImages)
                        DEPENDS "${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/Makefile"
     )
 
-endmacro()
+endfunction()
 
 function(commit name version)
     function(_commit type uri name version)
