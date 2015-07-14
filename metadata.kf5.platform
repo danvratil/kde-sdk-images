@@ -12,6 +12,6 @@ directory=share/zoneinfo
 directory=share/runtime/locale
 subdirectories=true
 
-[Environment Vars]
+[Environment]
 QT_PLUGIN_PATH=/self/lib/qt5/plugins:/lib/qt5/plugins
 QML2_IMPORT_PATH=/self/lib/qt5/qml:/lib/qt5/qml
