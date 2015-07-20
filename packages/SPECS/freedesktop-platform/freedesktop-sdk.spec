@@ -1,6 +1,6 @@
 Name:           freedesktop-sdk
 Version:        0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Freedesktop sdk
 Source1:        rpm-macros
 
@@ -86,13 +86,16 @@ Meta package for Gnome SDK dependencies
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
 install -m 0644 -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/debug
-ln -s /self/lib/debug $RPM_BUILD_ROOT%{_libdir}/debug/self
+ln -s /app/lib/debug $RPM_BUILD_ROOT%{_libdir}/debug/app
 
 %files
 %doc
 %{_sysconfdir}/rpm/macros
-%{_libdir}/debug/self
+%{_libdir}/debug/app
 
 %changelog
+* Mon Jul 20 2015 Daniel Vrátil <dvratil@redhat.com>
+- Move /self to /app
+
 * Fri Nov  7 2014 Alexander Larsson <alexl@redhat.com>
 - Initial version
