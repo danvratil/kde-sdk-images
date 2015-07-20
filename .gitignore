@@ -9,6 +9,7 @@ packages/SOURCES/*.tgz
 packages/SOURCES/*.tar.gz
 packages/SOURCES/*.tar.xz
 packages/SOURCES/*.tar.bz2
+packages/BUILD-XXXXX
 freedesktop-sdk-base
 build
 repo
