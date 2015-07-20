@@ -336,6 +336,7 @@ function(parseSPECFile package specFile sourcesList depsList)
     foreach(provides ${rawProvidesList})
         STRING(REGEX MATCH "^([0-9a-zA-Z_-]+)=(.*)$" match ${provides})
         set(${CMAKE_MATCH_1}_target ${CMAKE_MATCH_2})
+        set(${CMAKE_MATCH_1}_target ${CMAKE_MATCH_2} PARENT_SCOPE)
         LIST(APPEND ${package}_targets ${CMAKE_MATCH_1})
     endforeach()
 
@@ -359,8 +360,9 @@ function(parseSPECFile package specFile sourcesList depsList)
         endif()
     endforeach()
 
+    set(${package}_targets ${${package}_targets} PARENT_SCOPE)
     set(sourcesList ${sourcesList} PARENT_SCOPE)
-    set(depsList ${depsList} PARENT_SCOPE)
+    set(${depsList} ${${depsList}} PARENT_SCOPE)
 
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo " -- done")
 endfunction()
@@ -377,8 +379,14 @@ function(generatePackageTargets platform packages allTargets)
         endif()
 
         parseSPECFile(${package} ${specFile} ${package}_sources ${package}_deps)
-    endforeach()
 
+        set(${package}_targets ${${package}_targets} PARENT_SCOPE)
+        set(${package}_sources ${${package}_sources} PARENT_SCOPE)
+        set(${package}_deps ${${package}_deps} PARENT_SCOPE)
+        foreach(tgt ${${package}_targets})
+            set(${tgt}_target ${${tgt}_target} PARENT_SCOPE)
+        endforeach()
+    endforeach()
 
     # Generate targets for each package:
     # ${package} (meta target)
@@ -428,7 +436,6 @@ function(generatePackageTargets platform packages allTargets)
             set(installDeps true)
             set(depTargets "")
         endif()
-
         set(targets "")
         foreach(tgt ${${package}_targets})
             LIST(APPEND targets ${${tgt}_target})
@@ -458,7 +465,7 @@ function(generatePackageTargets platform packages allTargets)
     endforeach()
     unset(allDestFiles)
 
-    set(allTargets ${allTargets} PARENT_SCOPE)
+    set(${allTargets} ${${allTargets}} PARENT_SCOPE)
 endfunction()
 
 function(createBaseImages)
