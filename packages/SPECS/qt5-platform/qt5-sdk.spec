@@ -1,6 +1,6 @@
 Name:           qt5-sdk
 Version:        0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Qt 5 sdk
 Source1:        rpm-macros
 
