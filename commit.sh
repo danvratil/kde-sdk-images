@@ -12,7 +12,7 @@ REV=`git rev-parse HEAD`
 
 #cat "Extend metadata" > /tmp/sdk-commit-message
 #nano /tmp/sdk-commit-message
-COMMITMSG="Rebuild changes"
+COMMITMSG="Fresh rebuild against new xdg-app"
 #COMMITMSG="`cat /tmp/sdk-commit-message`"
 #rm /tmp/sdk-commit-message
 
