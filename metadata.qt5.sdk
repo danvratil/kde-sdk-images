@@ -13,6 +13,6 @@ directory=share/runtime/locale
 subdirectories=true
 
 [Environment]
-QT_PLUGIN_PATH=/self/lib/qt5/plugins:/lib/qt5/plugins
-QML2_IMPORT_PATH=/self/lib/qt5/qml:/lib/qt5/qml
+QT_PLUGIN_PATH=/app/lib/qt5/plugins:/lib/qt5/plugins
+QML2_IMPORT_PATH=/app/lib/qt5/qml:/lib/qt5/qml
 

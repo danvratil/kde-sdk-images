@@ -10,11 +10,12 @@ VERSION=$7
 
 REV=`git rev-parse HEAD`
 
-#cat "Extend metadata" > /tmp/sdk-commit-message
-#nano /tmp/sdk-commit-message
-COMMITMSG="Rebuild changes"
-#COMMITMSG="`cat /tmp/sdk-commit-message`"
-#rm /tmp/sdk-commit-message
+if [ -z "$COMMITMSG" ]; then
+    echo "Rebuild changes" >  /tmp/sdk-commit-message
+    nano /tmp/sdk-commit-message
+    COMMITMSG="`cat /tmp/sdk-commit-message`"
+    rm /tmp/sdk-commit-message
+fi
 
 rm -rf build/commit
 mkdir -p build/commit
