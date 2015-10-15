@@ -292,18 +292,18 @@ function(createSDK name)
     set(sdkname "${name}-sdk")
     add_custom_command(
         OUTPUT ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
-	# Extracts Yocto base image to build/root
+    	# Extracts Yocto base image to build/root
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE}
-	# Installs an SDK metapackage into the build/root basedir, this makes
-	# sure that all SDK packages are installed (via RPM dependencies) into
-	# the runtime.
-	# TODO: The version of the metapackage is hardcoded here, so it needs to
-	# be bumped manually when you bump the metapackage version (which happens)
+	    # Installs an SDK metapackage into the build/root basedir, this makes
+	    # sure that all SDK packages are installed (via RPM dependencies) into
+	    # the runtime.
+	    # TODO: The version of the metapackage is hardcoded here, so it needs to
+	    # be bumped manually when you bump the metapackage version (which happens)
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh smart install -y ${NOARCH}/${sdkname}-0.1-2.sdk.noarch.rpm
-	# Removes old SDK images
+	    # Removes old SDK images
         COMMAND ${CMAKE_COMMAND} -E remove -f ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
-	# Creates new SDK images (tar.gz archives) by tarring content of build/root/usr and build/var/lib/rpm.
-	# It rewrites build/root/usr and build/var to /files, which is the root folder in runtimes
+	    # Creates new SDK images (tar.gz archives) by tarring content of build/root/usr and build/var/lib/rpm.
+	    # It rewrites build/root/usr and build/var to /files, which is the root folder in runtimes
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${sdkname}.tar.gz build/root/usr --owner=root
         COMMAND tar --transform "s,^build/var,files,S" -czf ${sdkname}-rpmdb.tar.gz build/var/lib/rpm --owner=root
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
@@ -330,7 +330,7 @@ function(createPlatform name packages)
     set(installablePkgs)
     foreach (package ${packages})
         set(exclude "FALSE")
-	# Packages to skip: -dev, -debuginfo, -sdk, -static, -bootstrap (see Qt packages)
+	    # Packages to skip: -dev, -debuginfo, -sdk, -static, -bootstrap (see Qt packages)
         foreach (match IN ITEMS "-dev-" "-debuginfo-" "-sdk-" "-static-" "-bootstrap-")
             STRING(FIND "${package}" "${match}" pos REVERSE)
             if (${pos} GREATER -1)
@@ -348,11 +348,11 @@ function(createPlatform name packages)
     add_custom_command(
         OUTPUT ${platformname}.tar.gz ${platformname}-rpmdb.tar.gz
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building ${platformname}"
-	# Extract the Yocto base image to build/root
+    	# Extract the Yocto base image to build/root
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup_root.sh ${PLATFORM_BASE_IMAGE} > /dev/null
-	# Install all the RPMs to build/root
+	    # Install all the RPMs to build/root
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh --nodeps ${installablePkgs}
-	# Tar it up like in SDK
+	    # Tar it up like in SDK
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
@@ -366,8 +366,6 @@ endfunction()
 #
 # parseSPECFile(package, specFile, sourcesList, depsList)
 #
-# package: name of the package (foo)
-
 # package: name of the package (foo)
 # specFile: relative path to the specfile (packages/SPECS/bar/foo.spec). The path must be relative,
 #           because we use it both as target name and actual file path. But absolute paths differ
@@ -403,7 +401,7 @@ function(parseSPECFile package specFile sourcesList depsList)
     #
     # Finally it adds list of all the package names (foo, foo-devel, ...) into
     # ${package}_targets, e.g.  foo_targets.
-    #    
+    #
     foreach(provides ${rawProvidesList})
         STRING(REGEX MATCH "^([0-9a-zA-Z_-]+)=(.*)$" match ${provides})
         set(${CMAKE_MATCH_1}_target ${CMAKE_MATCH_2})
@@ -453,6 +451,7 @@ endfunction()
 # generatePackageTargets(platform, packages, allTargets)
 #
 # Creates CMake targets for each package
+#
 function(generatePackageTargets platform packages allTargets)
     if (NOT EXISTS "${CMAKE_SOURCE_DIR}/packages/SOURCES")
         FILE(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/packages/SOURCES")
@@ -464,7 +463,7 @@ function(generatePackageTargets platform packages allTargets)
         if (NOT EXISTS "${specFile}")
             message(FATAL_ERROR "SPEC file for package ${package} does not exist: ${specFile}")
         endif()
- 
+
         # Parse the SPEC file
         parseSPECFile(${package} ${specFile} ${package}_sources ${package}_deps)
 
@@ -498,14 +497,14 @@ function(generatePackageTargets platform packages allTargets)
             get_filename_component(fileName ${source} NAME)
             set(destFile "${CMAKE_SOURCE_DIR}/packages/SOURCES/${fileName}")
             LIST(APPEND sourceFiles ${destFile})
-	    # Make sure that the source file does not exist yet (i.e. it's not in allDestFiles)
+    	    # Make sure that the source file does not exist yet (i.e. it's not in allDestFiles)
             # This is necessary otherwise if two or more packages have the same tarball (happens!),
-	    # CMake would abort on the add_custom_command() below, because we would be trying to create
-  	    # an existing target multiple times. 	   
+	        # CMake would abort on the add_custom_command() below, because we would be trying to create
+      	    # an existing target multiple times.
             LIST(FIND allDestFiles ${destFile} found)
             if (${found} EQUAL -1)
-  		# If we haven't seen this source file before then add it to the list of allDestFiles and create
-		# a wget command to download it.
+  		        # If we haven't seen this source file before then add it to the list of allDestFiles and create
+		        # a wget command to download it.
                 LIST(APPEND allDestFiles ${destFile})
                 add_custom_command(
                     OUTPUT ${destFile}
@@ -515,8 +514,8 @@ function(generatePackageTargets platform packages allTargets)
                 )
             endif()
         endforeach(
-	# Create ${package}-sources target only if there are any sources, otherwise CMake
-	# will complain that the DEPENDS list is empty.
+	    # Create ${package}-sources target only if there are any sources, otherwise CMake
+	    # will complain that the DEPENDS list is empty.
         if ("${sourceFiles}")
             add_custom_target(${package}-sources
                 DEPENDS ${destFiles}
@@ -524,27 +523,27 @@ function(generatePackageTargets platform packages allTargets)
             add_dependencies(${package} ${package}-sources)
         endif()
 
-	# Go through all dependencies of each package (${$package}_deps}) and resolve
-	# them to filepaths to actual RPMs (that are in foo_target variables).
+	    # Go through all dependencies of each package (${$package}_deps}) and resolve
+	    # them to filepaths to actual RPMs (that are in foo_target variables).
         set(depsPackages "")
         foreach(dep ${${package}_deps})
             LIST(APPEND depsPackages ${${dep}_target})
         endforeach()
-	# If the package has any dependencies, then remove potential duplicates, and
-	# store a command to install the dependencies into the buildroot in "installDeps"
-	# variable.
+	    # If the package has any dependencies, then remove potential duplicates, and
+	    # store a command to install the dependencies into the buildroot in "installDeps"
+	    # variable.
         if (depsPackages)
             # smart does not like duplicates
             LIST(REMOVE_DUPLICATES depsPackages)
             set(installDeps ${CMAKE_SOURCE_DIR}/build.sh smart install -y ${depsPackages})
         else()
-	    # If there are no dependencies, then we will just invoke "true" command, which returns
-	    # success, so that CMake is happy when invoking multiple commands in add_custom_command().
+	        # If there are no dependencies, then we will just invoke "true" command, which returns
+	        # success, so that CMake is happy when invoking multiple commands in add_custom_command().
             set(installDeps true)
             set(depTargets "")
         endif()
 
-	# Store all targets (that is package names) in targets and allTargets variables.	 
+	    # Store all targets (that is package names) in targets and allTargets variables.
         set(targets "")
         foreach(tgt ${${package}_targets})
             LIST(APPEND targets ${${tgt}_target})
@@ -555,14 +554,14 @@ function(generatePackageTargets platform packages allTargets)
             OUTPUT ${targets}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Building ${package}\"
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Preparing build root ...\"
-	    # Prepare the base SDK image by extracting it to build/root
+	        # Prepare the base SDK image by extracting it to build/root
             COMMAND ${CMAKE_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Installing dependencies ...\"
-	    # If there are any deps, install them into the build root.
+	        # If there are any deps, install them into the build root.
             COMMAND ${installDeps}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Building ...\"
-	    # Now build the RPM for the current package, the build log is printed to screen as well as to
-	    # a file.
+	        # Now build the RPM for the current package, the build log is printed to screen as well as to
+	        # a file.
             COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile} | tee packages/LOGS/${package}.build
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/root
@@ -570,9 +569,9 @@ function(generatePackageTargets platform packages allTargets)
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
             DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${depsPackages}
         )
-	# Create a ${package}-build target that depends on all targets
-	# that represent dependencies of this package. That means that running
-	# "make foo" will make sure that all dependencies are built and available.
+	    # Create a ${package}-build target that depends on all targets
+	    # that represent dependencies of this package. That means that running
+	    # "make foo" will make sure that all dependencies are built and available.
         add_custom_target(${package}-build
             DEPENDS ${targets}
         )
@@ -621,15 +620,15 @@ endfunction()
 function(commit name version)
     # Helper function that does the actual commit
     function(_commit type uri name version)
-	# HACK: This will create an org.kde.foo.repo file after the commit. If you want
-	# to make a new commit, you need to remove the file first, otherwise CMake will
-	# think there's "nothing to do", since the file already exists.
-	# This is a workaround for CMake requiring add_custom_command() to always generate
-	# some file.
+	    # HACK: This will create an org.kde.foo.repo file after the commit. If you want
+	    # to make a new commit, you need to remove the file first, otherwise CMake will
+	    # think there's "nothing to do", since the file already exists.
+	    # This is a workaround for CMake requiring add_custom_command() to always generate
+	    # some file.
         add_custom_command(OUTPUT ${uri}.repo
-			   # If the ostree repo does not exist it will be created
+		    	           # If the ostree repo does not exist it will be created
                            COMMAND if [ ! -d ${REPO_PATH}  ]\; then ostree init --mode=archive-z2 --repo=${REPO_PATH} else \"Using existing repo\"\; fi
-			   # Does the actual commit - this takes forever.
+			               # Does the actual commit - this takes forever.
                            COMMAND ${CMAKE_SOURCE_DIR}/commit.sh repo ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz metadata.${name}.${type} ${uri} ${BUILD_ARCH} ${version}
                            COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_SOURCE_DIR}/${uri}.repo
                            DEPENDS ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz
