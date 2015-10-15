@@ -1,15 +1,29 @@
 project(kde-sdk-images)
 cmake_minimum_required(VERSION 3.0)
 
+# Dan's magical build script
+
+
+# These are versions of the final runtimes
+# TODO: Make this somehow support multiple versions
 set(FREEDESKTOP_VERSION "1.0")
 set(QT5_VERSION "5.4.1")
 set(KF5_VERSION "5.9.0")
 set(BUILD_ARCH "x86_64")
+# Revision of the used Yocto base
 set(BASE_HASH "8e44c998adbf1546c45cf733c688fed74e8ddc89")
 set(NOARCH "packages/RPMS/noarch")
 
+# This is where the ostree repository will be created
+set(REPO_PATH "repo")
+
+# This is where the built Yocto image will be created
+# The Yocto image is basically a tarball with base filesystem
 set(IMAGE_DIR "${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/images/${BUILD_ARCH}")
 
+# These are names of the freedesktop images, which are just tarballs with filesystems
+# Images include the freedesktop yocto base (freedesktop-sdk-base) + all the packages
+# listed below in freedesktop_PACKAGES
 set(SDK_BASE_IMAGE "${IMAGE_DIR}/freedesktop-contents-sdk-${BUILD_ARCH}-${BASE_HASH}.tar.gz")
 set(PLATFORM_BASE_IMAGE "${IMAGE_DIR}/freedesktop-contents-platform-${BUILD_ARCH}-${BASE_HASH}.tar.gz")
 
@@ -269,13 +283,27 @@ set(kf5_PACKAGES
 
 
 ######## Custom Macros #########
+
+# createSDK(name)
+#
+# Creates SDK images (tarballs) for given ${name}
+#
 function(createSDK name)
     set(sdkname "${name}-sdk")
     add_custom_command(
         OUTPUT ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
+	# Extracts Yocto base image to build/root
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE}
+	# Installs an SDK metapackage into the build/root basedir, this makes
+	# sure that all SDK packages are installed (via RPM dependencies) into
+	# the runtime.
+	# TODO: The version of the metapackage is hardcoded here, so it needs to
+	# be bumped manually when you bump the metapackage version (which happens)
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh smart install -y ${NOARCH}/${sdkname}-0.1-2.sdk.noarch.rpm
+	# Removes old SDK images
         COMMAND ${CMAKE_COMMAND} -E remove -f ${sdkname}.tar.gz ${sdkname}-rpmdb.tar.gz
+	# Creates new SDK images (tar.gz archives) by tarring content of build/root/usr and build/var/lib/rpm.
+	# It rewrites build/root/usr and build/var to /files, which is the root folder in runtimes
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${sdkname}.tar.gz build/root/usr --owner=root
         COMMAND tar --transform "s,^build/var,files,S" -czf ${sdkname}-rpmdb.tar.gz build/var/lib/rpm --owner=root
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
@@ -287,10 +315,22 @@ function(createSDK name)
     )
 endfunction()
 
+#
+# createPlatform(name, packages)
+#
+# Creates platform images (tarballs) for given platform ${name} containing
+# ${packages}.
+#
+# ${packages} contains *all* RPMs provided by all SPECfiles for the given
+# runtime, i.e. foo-1.0-1.x86.64.rpm, foo-dev-1.0-1.x64_64.rpm, foo-debuginfo-1.0-1.x86_64.rpm
+# etc.
 function(createPlatform name packages)
+    # Packages that we actually want to install, i.e. excluding -dev, -debuginfo and
+    # and other packages that belong to SDK but not Platform
     set(installablePkgs)
     foreach (package ${packages})
         set(exclude "FALSE")
+	# Packages to skip: -dev, -debuginfo, -sdk, -static, -bootstrap (see Qt packages)
         foreach (match IN ITEMS "-dev-" "-debuginfo-" "-sdk-" "-static-" "-bootstrap-")
             STRING(FIND "${package}" "${match}" pos REVERSE)
             if (${pos} GREATER -1)
@@ -308,8 +348,11 @@ function(createPlatform name packages)
     add_custom_command(
         OUTPUT ${platformname}.tar.gz ${platformname}-rpmdb.tar.gz
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Building ${platformname}"
+	# Extract the Yocto base image to build/root
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/setup_root.sh ${PLATFORM_BASE_IMAGE} > /dev/null
+	# Install all the RPMs to build/root
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build.sh rpm -Uvh --nodeps ${installablePkgs}
+	# Tar it up like in SDK
         COMMAND tar --transform "s,^build/root/usr,files,S" -czf ${platformname}.tar.gz build/root/usr --owner=root > /dev/null
         COMMAND tar --transform "s,^build/var,files,S" -czf ${platformname}-rpmdb.tar.gz build/var/lib/rpm --owner=root > /dev/null
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
@@ -320,19 +363,47 @@ function(createPlatform name packages)
     )
 endfunction()
 
+#
+# parseSPECFile(package, specFile, sourcesList, depsList)
+#
+# package: name of the package (foo)
+
+# package: name of the package (foo)
+# specFile: relative path to the specfile (packages/SPECS/bar/foo.spec). The path must be relative,
+#           because we use it both as target name and actual file path. But absolute paths differ
+#           here and in chroot in build.sh. The paths are relative to current working directory.
+# sourcesList (out): will be populated with list of Sources (URLs) from the SPEC file
+# depsList (out): will be populated with list of package names that are dependencies of this ${package}
+
 function(parseSPECFile package specFile sourcesList depsList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo_append "-- Parsing SPEC file for package ${package}")
-    # The path must be relative - we use it as both target name and actual file path,
-    # but absolute paths differ here and in chroot in build.sh
+    # Gets full list of packages names that this SPEC file provides in format described in --qf switch
     execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -q ${specFile} --qf "%{NAME}=packages/RPMS/%{ARCH}/%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm;"
                     OUTPUT_VARIABLE rawProvidesList)
+    # Gets full list of BuildRequires
     execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -q ${specFile} --buildrequires
                     OUTPUT_VARIABLE rawBuildRequiresList)
+    # Gets full list of Requires
 #    execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -q ${specFile} --requires
 #                    OUTPUT_VARIABLE rawRequiresList)
+    # Parses the whole SPEC file and outputs it to parsedFile variable. This includes expanding
+    # all variables in the SPEC file, evaluating all conditions etc.
     execute_process(COMMAND rpmspec -D "_topdir ${CMAKE_SOURCE_DIR}/packages" -D "dist .sdk" -P ${specFile}
                     OUTPUT_VARIABLE parsedFile)
 
+    # The content of rawProvidesList is something like
+    #   foo=packages/RPMS/x86_64/foo-1.0-1.x86_64.rpm
+    #   foo-devel=packages/RPMS/x86_64/foo-devel-1.0-1.x86_64.rpm
+    #   etc.
+    # It is parsed here an turned it into variables, i.e. it expands to
+    #   (variable) = (value)
+    #   foo_target = packages/RPMS/x86_64/foo-1.0-1.x86_64.rpm
+    #   foo-devel_target = packages/RPMS/x86_64/foo-1.0-1.x86_64.rpm
+    #   etc.
+    #
+    # Finally it adds list of all the package names (foo, foo-devel, ...) into
+    # ${package}_targets, e.g.  foo_targets.
+    #    
     foreach(provides ${rawProvidesList})
         STRING(REGEX MATCH "^([0-9a-zA-Z_-]+)=(.*)$" match ${provides})
         set(${CMAKE_MATCH_1}_target ${CMAKE_MATCH_2})
@@ -340,26 +411,37 @@ function(parseSPECFile package specFile sourcesList depsList)
         LIST(APPEND ${package}_targets ${CMAKE_MATCH_1})
     endforeach()
 
+    # Black magic: this turns new-line-separeted list of rawBuildRequiresList
+    # into a CMake semicolon-separated list. The first regexp escapes existing
+    # semicolons, the second one replaces newlines with CMake list separators (semicolons)
     STRING(REGEX REPLACE ";" "\\\\;" rawBuildRequiresList "${rawBuildRequiresList}")
     STRING(REGEX REPLACE "\n" ";" buildRequiresList "${rawBuildRequiresList}")
+    # Appends the list of dependencies to the depsList variable passed to this method.
     LIST(APPEND ${depsList} ${buildRequiresList})
 
 #    STRING(REGEX REPLACE ";" "\\\\;" rawRequiresList "${rawRequiresList}")
 #    STRING(REGEX REPLACE "\n" ";" requiresList "${rawRequiresList}")
 #    LIST(APPEND ${depsList} ${requiresList})
 
+    # Convert parsedFile to a CMake list by converting new lines to semicolons,
+    # so that we can iterate over the file line-by-line
     STRING(REGEX REPLACE ";" "\\\\;" parsedFile "${parsedFile}")
     STRING(REGEX REPLACE "\n" ";" parsedFile "${parsedFile}")
     foreach(line ${parsedFile})
+        # Look for all Sources
         STRING(REGEX MATCHALL "^Source[0-9]*:(.*)$" matches "${line}")
         if (NOT "${CMAKE_MATCH_1}" STREQUAL "")
             STRING(STRIP "${CMAKE_MATCH_1}" urlStripped)
+            # We are only interested in remote sources, so match by protocol
             if (${urlStripped} MATCHES "^(http|https|ftp):.*$")
+                # If it's a remote source, add it to the sourcesList list
                 LIST(APPEND ${sourcesList} "${urlStripped}")
             endif()
         endif()
     endforeach()
 
+    # Export the variables to the parent scope, so that they are available
+    # in caller's scope as well
     set(${package}_targets ${${package}_targets} PARENT_SCOPE)
     set(sourcesList ${sourcesList} PARENT_SCOPE)
     set(${depsList} ${${depsList}} PARENT_SCOPE)
@@ -367,19 +449,28 @@ function(parseSPECFile package specFile sourcesList depsList)
     execute_process(COMMAND ${CMAKE_COMMAND} -E echo " -- done")
 endfunction()
 
+#
+# generatePackageTargets(platform, packages, allTargets)
+#
+# Creates CMake targets for each package
 function(generatePackageTargets platform packages allTargets)
     if (NOT EXISTS "${CMAKE_SOURCE_DIR}/packages/SOURCES")
         FILE(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/packages/SOURCES")
     endif()
 
+    # For each given package make sure the SPEC file exists, then parse it
     foreach(package ${packages})
         set(specFile "${CMAKE_SOURCE_DIR}/packages/SPECS/${platform}-platform/${package}.spec")
         if (NOT EXISTS "${specFile}")
             message(FATAL_ERROR "SPEC file for package ${package} does not exist: ${specFile}")
         endif()
-
+ 
+        # Parse the SPEC file
         parseSPECFile(${package} ${specFile} ${package}_sources ${package}_deps)
 
+        # Export the following variables to parent scope, so that they are available in
+        # caller's scope as well. These were originally defined in parseSPECFile() and
+        # exported to our scope.
         set(${package}_targets ${${package}_targets} PARENT_SCOPE)
         set(${package}_sources ${${package}_sources} PARENT_SCOPE)
         set(${package}_deps ${${package}_deps} PARENT_SCOPE)
@@ -392,6 +483,8 @@ function(generatePackageTargets platform packages allTargets)
     # ${package} (meta target)
     #  '-- ${package}-build (build)
     #       '-- ${package}-sources (get sources)
+
+    # allDestFiles is a list of all source files needed by all packages.
     set(allDestFiles "")
     foreach(package ${packages})
         add_custom_target(${package})
@@ -405,8 +498,14 @@ function(generatePackageTargets platform packages allTargets)
             get_filename_component(fileName ${source} NAME)
             set(destFile "${CMAKE_SOURCE_DIR}/packages/SOURCES/${fileName}")
             LIST(APPEND sourceFiles ${destFile})
+	    # Make sure that the source file does not exist yet (i.e. it's not in allDestFiles)
+            # This is necessary otherwise if two or more packages have the same tarball (happens!),
+	    # CMake would abort on the add_custom_command() below, because we would be trying to create
+  	    # an existing target multiple times. 	   
             LIST(FIND allDestFiles ${destFile} found)
             if (${found} EQUAL -1)
+  		# If we haven't seen this source file before then add it to the list of allDestFiles and create
+		# a wget command to download it.
                 LIST(APPEND allDestFiles ${destFile})
                 add_custom_command(
                     OUTPUT ${destFile}
@@ -415,27 +514,37 @@ function(generatePackageTargets platform packages allTargets)
                     DEPENDS ${specFile}
                 )
             endif()
-        endforeach()
+        endforeach(
+	# Create ${package}-sources target only if there are any sources, otherwise CMake
+	# will complain that the DEPENDS list is empty.
         if ("${sourceFiles}")
-            # Only create the ${package}-source target if there are any sources
             add_custom_target(${package}-sources
                 DEPENDS ${destFiles}
             )
             add_dependencies(${package} ${package}-sources)
         endif()
 
+	# Go through all dependencies of each package (${$package}_deps}) and resolve
+	# them to filepaths to actual RPMs (that are in foo_target variables).
         set(depsPackages "")
         foreach(dep ${${package}_deps})
             LIST(APPEND depsPackages ${${dep}_target})
         endforeach()
+	# If the package has any dependencies, then remove potential duplicates, and
+	# store a command to install the dependencies into the buildroot in "installDeps"
+	# variable.
         if (depsPackages)
             # smart does not like duplicates
             LIST(REMOVE_DUPLICATES depsPackages)
             set(installDeps ${CMAKE_SOURCE_DIR}/build.sh smart install -y ${depsPackages})
         else()
+	    # If there are no dependencies, then we will just invoke "true" command, which returns
+	    # success, so that CMake is happy when invoking multiple commands in add_custom_command().
             set(installDeps true)
             set(depTargets "")
         endif()
+
+	# Store all targets (that is package names) in targets and allTargets variables.	 
         set(targets "")
         foreach(tgt ${${package}_targets})
             LIST(APPEND targets ${${tgt}_target})
@@ -446,10 +555,14 @@ function(generatePackageTargets platform packages allTargets)
             OUTPUT ${targets}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan \"Building ${package}\"
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Preparing build root ...\"
+	    # Prepare the base SDK image by extracting it to build/root
             COMMAND ${CMAKE_SOURCE_DIR}/setup.sh ${SDK_BASE_IMAGE}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Installing dependencies ...\"
+	    # If there are any deps, install them into the build root.
             COMMAND ${installDeps}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Building ...\"
+	    # Now build the RPM for the current package, the build log is printed to screen as well as to
+	    # a file.
             COMMAND ${CMAKE_SOURCE_DIR}/build.sh rpmbuild --clean -bb ${specFile} | tee packages/LOGS/${package}.build
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Cleaning up build root ...\"
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_SOURCE_DIR}/build/root
@@ -457,17 +570,30 @@ function(generatePackageTargets platform packages allTargets)
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --green \"* Done\"
             DEPENDS ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE} ${specFile} ${sourceFiles} ${depsPackages}
         )
+	# Create a ${package}-build target that depends on all targets
+	# that represent dependencies of this package. That means that running
+	# "make foo" will make sure that all dependencies are built and available.
         add_custom_target(${package}-build
             DEPENDS ${targets}
         )
         add_dependencies(${package} ${package}-build)
 
-    endforeach()
+    endforeach() # Go to next package.
     unset(allDestFiles)
 
+    # Export the allTargets variable to parent scope
     set(${allTargets} ${${allTargets}} PARENT_SCOPE)
 endfunction()
 
+#
+# createBaseImages()
+#
+# Clones and builds the Yocto base image. This takes something between
+# forever and eternity.
+#
+# We don't maintain the Yocto clone in this repo, instead we the one from Gnome's
+# freedesktop-sdk-base, which makes it easier for us and saves us ton of work.
+#
 function(createBaseImages)
     add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/freedesktop-sdk-base/Makefile
                        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Cloning freedesktop-sdk-base"
@@ -477,7 +603,8 @@ function(createBaseImages)
                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
-    # FIXME: Hardcoded -j5
+    # FIXME: Hardcoded -j5, could use more when using icecream or something.
+    # This will generate the base images (tarballs)
     add_custom_command(OUTPUT ${SDK_BASE_IMAGE} ${PLATFORM_BASE_IMAGE}
                        COMMAND make -j5
                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/freedesktop-sdk-base
@@ -486,10 +613,23 @@ function(createBaseImages)
 
 endfunction()
 
+#
+# commit(name, version)
+#
+# Commits Platform and SDK for given runtime of given version.
+#
 function(commit name version)
+    # Helper function that does the actual commit
     function(_commit type uri name version)
+	# HACK: This will create an org.kde.foo.repo file after the commit. If you want
+	# to make a new commit, you need to remove the file first, otherwise CMake will
+	# think there's "nothing to do", since the file already exists.
+	# This is a workaround for CMake requiring add_custom_command() to always generate
+	# some file.
         add_custom_command(OUTPUT ${uri}.repo
-                           COMMAND if [ ! -d repo ]\; then ostree init --mode=archive-z2 --repo=repo else \"Using existing repo\"\; fi
+			   # If the ostree repo does not exist it will be created
+                           COMMAND if [ ! -d ${REPO_PATH}  ]\; then ostree init --mode=archive-z2 --repo=${REPO_PATH} else \"Using existing repo\"\; fi
+			   # Does the actual commit - this takes forever.
                            COMMAND ${CMAKE_SOURCE_DIR}/commit.sh repo ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz metadata.${name}.${type} ${uri} ${BUILD_ARCH} ${version}
                            COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_SOURCE_DIR}/${uri}.repo
                            DEPENDS ${name}-${type}.tar.gz ${name}-${type}-rpmdb.tar.gz
@@ -501,6 +641,11 @@ function(commit name version)
     _commit(sdk org.kde.${name}.Sdk ${lcname} ${version})
 endfunction()
 
+#
+# untag(name, version)
+#
+# I'll be honest with you: I have no idea what this does.
+#
 function(untag name version)
     function(_untag type uri version)
         add_custom_command(OUTPUT ${uri}.repo.untagged
@@ -517,7 +662,7 @@ endfunction()
 
 ######### Build targets ##########
 
-# Clone git.gnome.org/freedesktop-sdk-base with the yocto base
+# Clone git.gnome.org/freedesktop-sdk-base with the yocto base.
 # it will generate the ${SDK_BASE_IMAGE} and ${PLATFORM_BASE_IMAGE} files
 createBaseImages()
 
@@ -535,6 +680,7 @@ generatePackageTargets("kf5" "${kf5_PACKAGES}" allPackages)
 createPlatform(kf5 "${allPackages}")
 createSDK(kf5)
 
+# Creates a "kde-sdk-images" target, which generates all images
 add_custom_target(kde-sdk-images ALL
     DEPENDS freedesktop-sdk.tar.gz
             freedesktop-sdk-rpmdb.tar.gz
@@ -550,6 +696,7 @@ commit(KF5 ${KF5_VERSION})
 #untag(Qt5 ${QT5_VERSION})
 #untag(KF5 ${KF5_VERSION})
 
+# Creates a "repo" target, which commits all images to OSTREE repository
 add_custom_target(repo ALL
     DEPENDS org.kde.Qt5.Platform.repo
             org.kde.Qt5.Sdk.repo
