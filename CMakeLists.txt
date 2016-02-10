@@ -513,7 +513,7 @@ function(generatePackageTargets platform packages allTargets)
                     DEPENDS ${specFile}
                 )
             endif()
-        endforeach(
+        endforeach()
 	    # Create ${package}-sources target only if there are any sources, otherwise CMake
 	    # will complain that the DEPENDS list is empty.
         if ("${sourceFiles}")
